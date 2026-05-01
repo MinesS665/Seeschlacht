@@ -1,0 +1,138 @@
+!SESSION 2026-05-01 20:22:13.400 -----------------------------------------------
+eclipse.buildId=4.39.0.20260305-0817
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=de_DE
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY ch.qos.logback.classic 1 0 2026-05-01 20:22:15.281
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2026-05-01 20:22:26.607
+!MESSAGE Logback config file: /home/miness665/Dokumente/Studium/Programmierung_II/Beleg/MarineBattle/.metadata/.plugins/org.eclipse.m2e.logback/logback.2.7.101.20251017-1242.xml
+
+!ENTRY com.genuitec.copilot4eclipse.boot 1 0 2026-05-01 20:22:29.699
+!MESSAGE [C4E] booting
+
+!ENTRY com.genuitec.copilot4eclipse.copilotapi 1 0 2026-05-01 20:22:29.756
+!MESSAGE [C4E] Language server: NATIVE_APP
+
+!ENTRY org.eclipse.lsp4e 1 0 2026-05-01 20:22:31.267
+!MESSAGE [LS:Copilot4Eclipse Language Server][Info]	[lsp] GitHub Copilot Language Server 1.348.0 initialized
+
+!ENTRY org.eclipse.lsp4e 1 0 2026-05-01 20:22:31.432
+!MESSAGE [LS:Copilot4Eclipse Language Server][Info]	[certificates] Removed 3 expired certificates
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:22:31.558
+!MESSAGE [C4E] Conversation persistence: /home/miness665/Dokumente/Studium/Programmierung_II/Beleg/MarineBattle/.metadata/.plugins/com.genuitec.copilot4eclipse/chatdata
+
+!ENTRY com.genuitec.copilot4eclipse.copilotapi 1 0 2026-05-01 20:22:31.577
+!MESSAGE [C4E] Copilot API proxy: native mode
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:22:31.703
+!MESSAGE [C4E] Internal server started: true uri: http://localhost:40273/chat
+
+!ENTRY com.genuitec.copilot4eclipse.boot 1 0 2026-05-01 20:22:32.434
+!MESSAGE [C4E] API started
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:22:36.570
+!MESSAGE [C4E] Workspace labels: 
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:25:16.338
+!MESSAGE [C4E] Internal server stopped: Server@6de031cc{STOPPED}[10.0.25,sto=0]
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:25:16.338
+!MESSAGE [C4E] Internal server stopped: true
+!SESSION 2026-05-01 20:25:17.876 -----------------------------------------------
+eclipse.buildId=4.39.0.20260305-0817
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=de_DE
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY ch.qos.logback.classic 1 0 2026-05-01 20:25:19.087
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2026-05-01 20:25:24.204
+!MESSAGE Logback config file: /home/miness665/Dokumente/Studium/Programmierung_II/Beleg/MarineBattle/.metadata/.plugins/org.eclipse.m2e.logback/logback.2.7.101.20251017-1242.xml
+
+!ENTRY com.genuitec.copilot4eclipse.boot 1 0 2026-05-01 20:25:26.613
+!MESSAGE [C4E] booting
+
+!ENTRY com.genuitec.copilot4eclipse.copilotapi 1 0 2026-05-01 20:25:26.653
+!MESSAGE [C4E] Language server: NATIVE_APP
+
+!ENTRY org.eclipse.lsp4e 1 0 2026-05-01 20:25:28.015
+!MESSAGE [LS:Copilot4Eclipse Language Server][Info]	[lsp] GitHub Copilot Language Server 1.348.0 initialized
+
+!ENTRY org.eclipse.lsp4e 1 0 2026-05-01 20:25:28.168
+!MESSAGE [LS:Copilot4Eclipse Language Server][Info]	[certificates] Removed 3 expired certificates
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:25:28.263
+!MESSAGE [C4E] Conversation persistence: /home/miness665/Dokumente/Studium/Programmierung_II/Beleg/MarineBattle/.metadata/.plugins/com.genuitec.copilot4eclipse/chatdata
+
+!ENTRY com.genuitec.copilot4eclipse.copilotapi 1 0 2026-05-01 20:25:28.277
+!MESSAGE [C4E] Copilot API proxy: native mode
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:25:28.383
+!MESSAGE [C4E] Internal server started: true uri: http://localhost:43339/chat
+
+!ENTRY com.genuitec.copilot4eclipse.boot 1 0 2026-05-01 20:25:28.994
+!MESSAGE [C4E] API started
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:25:33.285
+!MESSAGE [C4E] Workspace labels: 
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:26:25.268
+!MESSAGE [C4E] Internal server stopped: Server@44f2a6fe{STOPPED}[10.0.25,sto=0]
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:26:25.268
+!MESSAGE [C4E] Internal server stopped: true
+!SESSION 2026-05-01 20:26:26.848 -----------------------------------------------
+eclipse.buildId=4.39.0.20260305-0817
+java.version=21.0.10
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=de_DE
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.java.product -data file:/home/miness665/Dokumente/Studium/Programmierung_II/Beleg/MarineBattle/
+
+!ENTRY ch.qos.logback.classic 1 0 2026-05-01 20:26:28.068
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2026-05-01 20:26:28.980
+!MESSAGE Logback config file: /home/miness665/Dokumente/Studium/Programmierung_II/Beleg/MarineBattle/.metadata/.plugins/org.eclipse.m2e.logback/logback.2.7.101.20251017-1242.xml
+
+!ENTRY com.genuitec.copilot4eclipse.boot 1 0 2026-05-01 20:26:31.530
+!MESSAGE [C4E] booting
+
+!ENTRY com.genuitec.copilot4eclipse.copilotapi 1 0 2026-05-01 20:26:31.570
+!MESSAGE [C4E] Language server: NATIVE_APP
+
+!ENTRY org.eclipse.lsp4e 1 0 2026-05-01 20:26:32.979
+!MESSAGE [LS:Copilot4Eclipse Language Server][Info]	[lsp] GitHub Copilot Language Server 1.348.0 initialized
+
+!ENTRY org.eclipse.lsp4e 1 0 2026-05-01 20:26:33.130
+!MESSAGE [LS:Copilot4Eclipse Language Server][Info]	[certificates] Removed 3 expired certificates
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:26:33.216
+!MESSAGE [C4E] Conversation persistence: /home/miness665/Dokumente/Studium/Programmierung_II/Beleg/MarineBattle/.metadata/.plugins/com.genuitec.copilot4eclipse/chatdata
+
+!ENTRY com.genuitec.copilot4eclipse.copilotapi 1 0 2026-05-01 20:26:33.238
+!MESSAGE [C4E] Copilot API proxy: native mode
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:26:33.344
+!MESSAGE [C4E] Internal server started: true uri: http://localhost:40531/chat
+
+!ENTRY com.genuitec.copilot4eclipse.boot 1 0 2026-05-01 20:26:33.994
+!MESSAGE [C4E] API started
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:26:38.229
+!MESSAGE [C4E] Workspace labels: 
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:26:42.455
+!MESSAGE [C4E] Internal server stopped: Server@563ab7c2{STOPPED}[10.0.25,sto=0]
+
+!ENTRY com.genuitec.copilot4eclipse.chat 1 0 2026-05-01 20:26:42.456
+!MESSAGE [C4E] Internal server stopped: true
