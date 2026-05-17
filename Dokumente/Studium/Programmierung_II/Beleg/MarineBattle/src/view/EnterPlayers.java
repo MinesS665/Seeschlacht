@@ -3,6 +3,7 @@ package view;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import model.Player;
@@ -12,25 +13,24 @@ import javax.swing.JButton;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
 
-public class EnterPlayers extends JPanel {
+public class EnterPlayers extends JPanel{
 	
-	int maxPlayers = 10;
-	int visiblePlayers = 2;
-
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Create the panel.
-	 */
-	public EnterPlayers() {
 	
-		ArrayList<JLabel> lblPlayer = new ArrayList<JLabel>();
-		ArrayList<JTextField> txtEnterName = new ArrayList<JTextField>();
-		ArrayList<JComboBox> comboPickColor = new ArrayList<JComboBox>();
+	//Verbindung zum MainWindow herstellen
+	private static MainWindow parent;
+	static JPanel mainPanel;
+	
+	//globale Variablen
+	static int maxPlayers = 10;
+	static int visiblePlayers = 2;
+	static PlayerRow[] players = new PlayerRow[maxPlayers];
+
+	//Objekte und Layout generieren
+	public EnterPlayers(MainWindow parent) {
+		
+		EnterPlayers.parent = parent;
 		
 		setLayout(new BorderLayout(0, 0));
 		
@@ -48,47 +48,118 @@ public class EnterPlayers extends JPanel {
 		JButton btnFinish = new JButton("Fertig");
 		optionsPane.setRightComponent(btnFinish);
 		
-		JPanel panel = new JPanel();
-		add(panel, BorderLayout.CENTER);
-		panel.setLayout(new GridLayout(0, 3));
+		mainPanel = new JPanel();
+		add(mainPanel, BorderLayout.CENTER);
+		mainPanel.setLayout(new GridLayout(0, 1));
 		
-		createLayout(lblPlayer, txtEnterName, comboPickColor, panel);
-		
-		btnNewPlayer.addActionListener(e -> {
-			if(visiblePlayers <= maxPlayers) {
-				visiblePlayers++;
-			}else {
-				maxPlayers++;
-				visiblePlayers++;
-			}
+		//Alle Spieler erstellen, nur teilweise sichtbar machen
+		for(int i = 0; i<maxPlayers; i++) {
+			players[i] = new PlayerRow(i+1);
+			mainPanel.add(players[i]);
 			
+			if (i>=visiblePlayers) players[i].setVisible(false);
+		}
+		
+		//neue Spieler hinzufügen
+		btnNewPlayer.addActionListener(e -> {
+			if(visiblePlayers < maxPlayers) {
+				visiblePlayers++;
+				updateLayout();
+			}else {
+				JOptionPane.showMessageDialog(parent, "Maximale Spieleranzahl erreicht");
+			}
 		});
+		
+		//Spielerbearbeitung verlassen
+		btnFinish.addActionListener(e -> submitPlayers());
 		
 	}
 	
-	void createLayout(ArrayList<JLabel> lblPlayer, ArrayList<JTextField> txtEnterName, ArrayList<JComboBox> comboPickColor, JPanel panel) {
+	public void submitPlayers() {
+
+		ArrayList<String> names = new ArrayList<>();
+		ArrayList<Player> finalPlayers = new ArrayList<>();
+		PlayerRow[] visPlayers = new PlayerRow[visiblePlayers];
+		int x = 0;
+		int j = 0;
 		
-		String[] colors = {"Farbe wählen", "Rot", "Orange", "Gelb", "Lila", "Schwarz", "Weiß"};
-		
-		for (int i = 0; i<=maxPlayers; i++) {
-			
-			lblPlayer.add(new JLabel("Spieler " + (i+1)));
-			panel.add(lblPlayer.get(i));
-			
-			txtEnterName.add(new JTextField());
-			panel.add(txtEnterName.get(i));
-			
-			comboPickColor.add(new JComboBox<String>(colors));
-			panel.add(comboPickColor.get(i));
-			
-			if (i>visiblePlayers-1) {
-				lblPlayer.get(i).setVisible(false);
-				txtEnterName.get(i).setVisible(false);
-				comboPickColor.get(i).setVisible(false);
-			} 
+		//nur sichtbare Spieler auswählen
+		for (PlayerRow p : players) {
+			if (p.isVisible()) {
+				visPlayers[j] = p;
+				j++;
+			}
 		}
-		//Layout neuladen
-		panel.revalidate();
-		panel.repaint();
+		
+		//Fehlerbehandlung
+		for (PlayerRow p : visPlayers) {
+			if (p.getTxtEnterName().isBlank()) {
+				JOptionPane.showMessageDialog(parent, "Alle Spieler müssen einen Namen wählen");
+				x = -1;
+				break;
+			}
+			if (names.contains(p.getTxtEnterName())) {
+				JOptionPane.showMessageDialog(parent,  "Alle Spieler sollten verschiedene Namen wählen");
+				x = -1;
+				break;
+				
+			} else names.add(p.getTxtEnterName());
+			
+			//Spieler der Arraylist hinzufügen
+			finalPlayers.add(new Player(p.getTxtEnterName(), p.getComboPickColor()));
+		}
+		
+		if (x == 0) {
+			parent.leavePlayerEditor();
+		}
+		
 	}
+	
+	public static void updateLayout() {
+		
+		//Alle Objekte entfernen und gewünste wiederhserstellen um Reihenfolge beizubehalten
+		mainPanel.removeAll();
+		for (int i = 0; i < maxPlayers; i++) {
+			mainPanel.add(players[i]);
+			if (i>=visiblePlayers) players[i].setVisible(false);
+			else players[i].setVisible(true);
+		}
+		
+		mainPanel.revalidate();
+		mainPanel.repaint();
+	}
+	
+	public static void removePlayer(PlayerRow rowToRemove) {
+		
+		if (visiblePlayers <=2) {
+			JOptionPane.showMessageDialog(parent, "Es braucht mindestes 2 Spieler");
+			return;
+		}
+		
+		int playerIndex =-1;
+		
+		//richtige Reihe zum entfernen finden
+		for (int i = 0; i < visiblePlayers; i++) {
+	        if (players[i] == rowToRemove) {
+	            playerIndex = i;
+	            break;
+	        }
+	    }
+		
+		if (playerIndex == -1) return;
+		
+		//Spieler nachrücken
+		for (int i=playerIndex; i<visiblePlayers-1; i++) {
+			players[i] = players[i + 1];
+			players[i].updateLabel(i);
+		}
+		
+		players[visiblePlayers - 1] = rowToRemove; 
+		
+		visiblePlayers--;
+		PlayerRow.aPlayers--;
+		
+		updateLayout();
+	}	
+	
 }
