@@ -2,15 +2,13 @@ package model;
 
 public class Ship {
 	
-	private int xPos;
-	private int yPos;
+	private Coordinates pos;
 	private boolean isSelected;
 	private Player captain;
 
-	public Ship (Player captain, int xPos, int yPos) {
+	public Ship (Player captain, Coordinates pos) {
 		this.captain = captain;
-		this.xPos = xPos;
-		this.yPos = yPos;
+		this.pos = pos;
 		isSelected = false;
 	}
 }

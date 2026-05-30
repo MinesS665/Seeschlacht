@@ -13,8 +13,8 @@ public class Main {
 			
 			GameMap map = new GameMap("/assets/Map.png");
             
+            GameModel model = new GameModel(map);
             MainWindow view = new MainWindow();
-            GameModel model = new GameModel();
             GameController controller = new GameController(view, model, map);
             
             view.setVisible(true);

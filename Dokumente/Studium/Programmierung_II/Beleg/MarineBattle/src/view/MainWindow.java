@@ -6,7 +6,11 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import controller.GameController;
 import model.GameMap;
+import model.GameModel;
+import model.Player;
+
 import java.awt.BorderLayout;
 
 public class MainWindow extends JFrame{
@@ -16,6 +20,9 @@ public class MainWindow extends JFrame{
 	private JPanel mainPanel = new JPanel(cardLayout);
 	private JPanel gamePanel = new JPanel(new BorderLayout());
 	private JPanel boardPanel;
+	private JPanel controlPanel;
+	
+	private GameController controller;
 
 	public MainWindow() {
 		
@@ -35,25 +42,26 @@ public class MainWindow extends JFrame{
 		this.pack(); 
 		this.setLocationRelativeTo(null);
 		
-		enterPlayerEditor();
-		leavePlayerEditor();
+		EnterPlayerEditor();
 	}
 	
-	public void leavePlayerEditor() {
+	public void LeavePlayerEditor() {
 		cardLayout.show(mainPanel, "GAME");
 		this.pack(); 
 		this.setLocationRelativeTo(null);
 	}
 	
-	public void enterPlayerEditor() {
+	public void EnterPlayerEditor() {
 		cardLayout.show(mainPanel, "P-MENU");
 		this.pack(); 
 		this.setLocationRelativeTo(null);
 	}
 
-	public void createMap(GameMap map) {
+	public void CreateMap(GameMap map) {
 		boardPanel = new Board(this, map);
 		gamePanel.add(boardPanel, BorderLayout.CENTER);
+		controlPanel = new ControlBar(this);
+		gamePanel.add(controlPanel, BorderLayout.SOUTH);
 		
 		this.pack(); 
 		this.setLocationRelativeTo(null); // Zentriert das Fenster auf dem Bildschirm
@@ -61,4 +69,27 @@ public class MainWindow extends JFrame{
 		gamePanel.repaint();
 	}
 
+	public void PlaceHarbour(Player p) {
+		
+		((ControlBar) controlPanel).NextMove(p, 0);
+		((ControlBar) controlPanel).PlaceHarbour(p);
+	}
+
+	public GameController getController() {
+		return controller;
+	}
+
+	public void setController(GameController controller) {
+		this.controller = controller;
+	}
+	
+	public void NextMove() {
+		//controlPanel.NextMove();
+	}
+
+	public ControlBar getControlPanel() {
+		return (ControlBar) controlPanel;
+	}
+	
+	
 }

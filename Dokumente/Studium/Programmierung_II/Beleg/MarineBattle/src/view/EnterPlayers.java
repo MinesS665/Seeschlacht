@@ -6,6 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
+import model.GameModel;
 import model.Player;
 
 import javax.swing.JSplitPane;
@@ -110,7 +111,8 @@ public class EnterPlayers extends JPanel{
 		}
 		
 		if (x == 0) {
-			parent.leavePlayerEditor();
+			parent.getController().SavePlayers(finalPlayers);
+			parent.LeavePlayerEditor();
 		}
 		
 	}

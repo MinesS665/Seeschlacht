@@ -3,9 +3,13 @@ package model;
 import java.util.ArrayList;
 
 public class GameModel {
+
+	private ArrayList<Player> players = new ArrayList<>();
+	GameMap map;
 	
-	private String imagePath = "/assets/Map.png";
-	ArrayList<Player> players = new ArrayList<>();
+	public GameModel (GameMap map) {
+		this.map = map;
+	}
 	
 	public void UpdatePlayers(ArrayList<Player> updatedPlayers) {
 		
@@ -18,10 +22,13 @@ public class GameModel {
 		}
 		
 	}
-	
-	public GameMap CreateMap() {
-		GameMap map = new GameMap(imagePath);
-		return map;
+
+	public ArrayList<Player> getPlayers() {
+		return players;
 	}
 
+	public GameMap getMap() {
+		return map;
+	}
+	
 }

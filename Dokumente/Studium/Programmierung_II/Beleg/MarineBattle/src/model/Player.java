@@ -9,8 +9,7 @@ public class Player {
 	private String name;
 	private Color colour;
 
-	private int xPosHabour;
-	private int yPosHabour;
+	private Coordinates posHabour;
 	boolean itsTurn;
 	
 	public Player(String name, Color colour) {
@@ -27,4 +26,27 @@ public class Player {
 	public static int getPlayerCount() {
 		return playerCount;
 	}
+
+	public Color getColour() {
+		return colour;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public int getID() {
+		return ID;
+	}
+
+	public void setPosHabour(Coordinates posHabour) {
+		this.posHabour = posHabour;
+	}
+
+	public Coordinates getPosHabour() {
+		return posHabour;
+	}
+	
+	
+	
 }
