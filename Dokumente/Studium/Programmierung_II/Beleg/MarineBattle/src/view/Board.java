@@ -4,11 +4,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 import model.Coordinates;
 import model.GameMap;
+import model.Ship;
 import model.TileTyp;
 
 import java.awt.Color;
@@ -53,25 +55,61 @@ public class Board extends JPanel{
 		Coordinates harbourPos = (curPlayer != null) ? curPlayer.getPosHabour() : null;
 		
 		//Map zeichnen
-        for (int x = 0; x < map.getWidth(); x++) {
+        DrawMap(g2d);
+                
+        //Schiffe zeichnen
+        DrawShips(g2d);   
+               
+                
+                
+    }
+	
+	public void DrawMap(Graphics2D g2d) {
+		for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 
             	TileTyp type = map.getTile(x, y);
                 
                 if (type == TileTyp.WATER) g2d.setColor(new Color(127, 214, 209));
                 else g2d.setColor(new Color(120, 191, 105));
-                
-                //Farbe des aktuell vom Spieler ausgewählten Feld setzen
-                if (harbourPos != null && harbourPos.getX() == x && harbourPos.getY() == y) {
-                    g2d.setColor(Color.WHITE);
-                }
-                
-                //Pixel zeichnen
-                g2d.fillRect(x*tileSize, y*tileSize, tileSize, tileSize);
+	
+              //Pixel zeichnen
+              g2d.fillRect(x*tileSize, y*tileSize, tileSize, tileSize);
             }
-        }
+		}
 	}
 	
-	
-
+	public void DrawShips(Graphics2D g2d) {
+		
+		ArrayList<model.Player> allPlayers = parent.getController().players;;
+			         
+		if (allPlayers != null) {
+			for (model.Player p : allPlayers) {
+				g2d.setColor(p.getColour());
+			                 
+				// Schleife durch alle Schiffe dieses Spielers
+				for (Ship s : p.ships) {
+					if (s != null) {
+						
+						Coordinates shipPos1 = s.getPos();
+						Coordinates shipPos2 = s.getSecPos();
+						
+						if (shipPos1 != null && shipPos2 != null) {
+							
+							// Zeichne ein Quadrat in Spielerfarbe auf die Kachel
+							g2d.fillRect(shipPos1.getX() * tileSize, shipPos1.getY() * tileSize, tileSize, tileSize);
+							g2d.fillRect(shipPos2.getX() * tileSize, shipPos2.getY() * tileSize, tileSize, tileSize);
+			                    
+							// Optional: Einen kleinen schwarzen Rand um das Schiff, damit man sie besser erkennt
+							g2d.setColor(Color.BLACK);
+							g2d.drawRect(shipPos1.getX() * tileSize, shipPos1.getY() * tileSize, tileSize, tileSize);
+							g2d.drawRect(shipPos2.getX() * tileSize, shipPos2.getY() * tileSize, tileSize, tileSize);
+							// Farbe wieder zurücksetzen für das nächste Schiff
+							g2d.setColor(p.getColour()); 
+						}
+					}
+				}
+			}
+		}
+	}
 }

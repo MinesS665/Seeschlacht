@@ -54,7 +54,7 @@ public class ControlBar extends JPanel {
 		
 	}
 	
-	public void NextMove(Player player, int turn) {
+	public void NextMove(Player player) {
 		
 		colour = player.getColour();
 		isPlaced = false;
@@ -64,13 +64,23 @@ public class ControlBar extends JPanel {
 		actionPanel.setBackground(colour);
 		lblPlayerName.setText(player.getName());
 		
-		if (turn == 0) {
-			PlaceHarbour(player);
+		String[] shipDisplay = new String[5];
+		
+		
+		for (int i = 0; i < 5; i++) {
+			if (player.ships[i] != null) {
+				if (player.ships[i].isSunken == true) shipDisplay[i] = "x";
+				else shipDisplay[i] = "o";
+			}
 		}
+		
+		lblShipsDisplay.setText("Verfügbare Schiffe: " + shipDisplay[0] + shipDisplay[1] + shipDisplay[2] + shipDisplay[3] + shipDisplay[4]);
 		
 	}
 	
-	public void PlaceHarbour(Player player) {		
+	public void PlaceHarbour(Player player) {
+		
+		NextMove(player);
 		
 		lblShipsDisplay.setText("Von wo aus soll deine Flotte operieren?");
 		btnAngriff.setVisible(false);

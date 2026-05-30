@@ -11,6 +11,7 @@ public class Player {
 
 	private Coordinates posHabour;
 	boolean itsTurn;
+	public Ship[] ships = new Ship[5];
 	
 	public Player(String name, Color colour) {
 		playerCount++;
@@ -45,6 +46,12 @@ public class Player {
 
 	public Coordinates getPosHabour() {
 		return posHabour;
+	}
+
+	@Override
+	public String toString() {
+		return "Player [ID=" + ID + ", name=" + name + ", colour=" + colour + ", posHabour=" + posHabour + ", itsTurn="
+				+ itsTurn + "]";
 	}
 	
 	

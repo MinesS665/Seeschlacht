@@ -71,7 +71,6 @@ public class MainWindow extends JFrame{
 
 	public void PlaceHarbour(Player p) {
 		
-		((ControlBar) controlPanel).NextMove(p, 0);
 		((ControlBar) controlPanel).PlaceHarbour(p);
 	}
 

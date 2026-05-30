@@ -8,6 +8,7 @@ import model.Coordinates;
 import model.GameModel;
 import view.MainWindow;
 import model.Player;
+import model.Ship;
 import model.TileTyp;
 
 public class GameController {
@@ -17,6 +18,7 @@ public class GameController {
 	private int turn = 0;
 	private GameState state = new GameState();
 	private Player curPlayer;
+	public ArrayList<Player> players;
 
 	
 	public GameController (MainWindow view, GameModel model, model.GameMap map) {
@@ -35,18 +37,33 @@ public class GameController {
 	
 	public void StartGame() {
 		
-		ArrayList<Player> players = model.getPlayers();
+		players = model.getPlayers();
+		state.setState(State.PLACE_HARBOUR);
 		
-		for (int i = Player.getPlayerCount(); i>0 ; i--) {
-			curPlayer = players.get(i-1);
-			view.PlaceHarbour(players.get(i-1));
-			state .setState(State.PLACE_HARBOUR);;
-		}
+		curPlayer = players.get(0);
+		
+		view.PlaceHarbour(curPlayer);
+
 	}
 	
 	public void NextMove() {
 		
+		if (curPlayer.getID() == players.size()) NextTurn();
+		else {
+			System.out.println("else");
+			curPlayer = players.get(curPlayer.getID());
+		}
 		
+		if (state.getState() == State.PLACE_HARBOUR) view.PlaceHarbour(curPlayer);
+		
+		System.out.println(curPlayer);
+	}
+
+	private void NextTurn() {
+		
+		state.setState(State.MOVE);
+		
+		curPlayer = players.get(0);
 		
 	}
 
@@ -57,23 +74,39 @@ public class GameController {
 			return;
 		} 
 		
+		if (state.getState() == State.PLACE_HARBOUR) placeHarbour(x,y);
 		
-		if (state.getState() == State.PLACE_HARBOUR) {
-			
-			for (int i = -5; i<=5; i++) {
-				for (int j = -2; j<=2; j++) {
-					if(model.getMap().getTile(x+i,y+j) != TileTyp.WATER) {
-						JOptionPane.showMessageDialog(view, "Nicht genug Platz für deine Flotte. Entferne dich weiter vom Ufer");
-						return;
-					}
+		if (state.getState() == State.MOVE) MoveShip();
+		
+	}
+	
+	private void MoveShip() {
+		
+		
+		
+	}
+
+	public void placeHarbour(int x, int y) {
+		
+		for (int i = -5; i<=5; i++) {
+			for (int j = -2; j<=2; j++) {
+				if(model.getMap().getTile(x+i,y+j) != TileTyp.WATER) {
+					JOptionPane.showMessageDialog(view, "Nicht genug Platz für deine Flotte. Entferne dich weiter vom Ufer");
+					return;
 				}
 			}
-			
-			curPlayer.setPosHabour(new Coordinates(x,y));
-			view.repaint();
-			view.getControlPanel().setPlaced(true);
 		}
 		
+		curPlayer.setPosHabour(new Coordinates(x,y));
+		
+		curPlayer.ships[0] = new Ship(curPlayer, new Coordinates(x-4,y));
+		curPlayer.ships[1] = new Ship(curPlayer, new Coordinates(x-2,y));
+		curPlayer.ships[2] = new Ship(curPlayer, new Coordinates(x,y));
+		curPlayer.ships[3] = new Ship(curPlayer, new Coordinates(x+2,y));
+		curPlayer.ships[4] = new Ship(curPlayer, new Coordinates(x+4,y));
+		
+		view.repaint();
+		view.getControlPanel().setPlaced(true);
 	}
 
 	public Player getCurPlayer() {
