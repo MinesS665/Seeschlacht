@@ -4,6 +4,7 @@ import java.awt.CardLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import controller.GameController;
@@ -82,13 +83,16 @@ public class MainWindow extends JFrame{
 		this.controller = controller;
 	}
 	
-	public void NextMove() {
-		//controlPanel.NextMove();
+	public void NextMove(Player p) {
+		
+		((ControlBar) controlPanel).NextMove(p);
 	}
 
 	public ControlBar getControlPanel() {
 		return (ControlBar) controlPanel;
 	}
 	
-	
+	public void problem (String text) {
+		JOptionPane.showMessageDialog(this, text);
+	}
 }

@@ -40,7 +40,7 @@ public class Board extends JPanel{
         		int xPixel = e.getX() / tileSize;
         		int yPixel = e.getY() /tileSize;
         		
-        		parent.getController().handleMapCLick(xPixel, yPixel);
+        		parent.getController().handleMapCLick(new Coordinates(xPixel, yPixel));
         	}
         });
 	}
@@ -81,11 +81,13 @@ public class Board extends JPanel{
 	
 	public void DrawShips(Graphics2D g2d) {
 		
+		System.out.println("paint");
+		
 		ArrayList<model.Player> allPlayers = parent.getController().players;;
 			         
 		if (allPlayers != null) {
 			for (model.Player p : allPlayers) {
-				g2d.setColor(p.getColour());
+				
 			                 
 				// Schleife durch alle Schiffe dieses Spielers
 				for (Ship s : p.ships) {
@@ -96,9 +98,14 @@ public class Board extends JPanel{
 						
 						if (shipPos1 != null && shipPos2 != null) {
 							
+							if (s.isSelected == true) {g2d.setColor(Color.WHITE); System.out.println("weiß");}
+							else g2d.setColor(p.getColour());
+							
 							// Zeichne ein Quadrat in Spielerfarbe auf die Kachel
 							g2d.fillRect(shipPos1.getX() * tileSize, shipPos1.getY() * tileSize, tileSize, tileSize);
 							g2d.fillRect(shipPos2.getX() * tileSize, shipPos2.getY() * tileSize, tileSize, tileSize);
+							
+							
 			                    
 							// Optional: Einen kleinen schwarzen Rand um das Schiff, damit man sie besser erkennt
 							g2d.setColor(Color.BLACK);

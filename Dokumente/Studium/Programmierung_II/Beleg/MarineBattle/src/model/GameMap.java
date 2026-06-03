@@ -52,6 +52,13 @@ public class GameMap {
         }
         return TileTyp.LAND; // Außerhalb der Map blockieren
 	}
+	
+	public TileTyp getTile(Coordinates c) {
+		if (c.getX() >= 0 && c.getX() < width && c.getY() >= 0 && c.getY()< height) {
+            return grid[c.getX()][c.getY()];
+        }
+        return TileTyp.LAND; // Außerhalb der Map blockieren
+	}
 
 	public int getWidth() {
 		return width;
@@ -60,4 +67,6 @@ public class GameMap {
 	public int getHeight() {
 		return height;
 	}
+
+	
 }

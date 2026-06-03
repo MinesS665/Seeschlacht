@@ -67,7 +67,7 @@ public class EnterPlayers extends JPanel{
 				visiblePlayers++;
 				updateLayout();
 			}else {
-				JOptionPane.showMessageDialog(parent, "Maximale Spieleranzahl erreicht");
+				parent.problem("Maximale Spieleranzahl erreicht");
 			}
 		});
 		
@@ -95,12 +95,12 @@ public class EnterPlayers extends JPanel{
 		//Fehlerbehandlung
 		for (PlayerRow p : visPlayers) {
 			if (p.getTxtEnterName().isBlank()) {
-				JOptionPane.showMessageDialog(parent, "Alle Spieler müssen einen Namen wählen");
+				parent.problem("Alle Spieler müssen einen Namen wählen");
 				x = -1;
 				break;
 			}
 			if (names.contains(p.getTxtEnterName())) {
-				JOptionPane.showMessageDialog(parent,  "Alle Spieler sollten verschiedene Namen wählen");
+				parent.problem( "Alle Spieler sollten verschiedene Namen wählen");
 				x = -1;
 				break;
 				
@@ -134,7 +134,7 @@ public class EnterPlayers extends JPanel{
 	public static void removePlayer(PlayerRow rowToRemove) {
 		
 		if (visiblePlayers <=2) {
-			JOptionPane.showMessageDialog(parent, "Es braucht mindestes 2 Spieler");
+			parent.problem("Es braucht mindestes 2 Spieler");
 			return;
 		}
 		

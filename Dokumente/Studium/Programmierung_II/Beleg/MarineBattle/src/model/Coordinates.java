@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Coordinates {
 	int x;
 	int y;
@@ -16,18 +18,34 @@ public class Coordinates {
 	public int getY() {
 		return y;
 	}
+
+	public Coordinates addValue (int x1, int y1) {
+		return new Coordinates(x+x1, y+y1);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Coordinates other = (Coordinates) obj;
+		return x == other.x && y == other.y;
+	}
 	
-	public Coordinates LeftOf() {
-		return new Coordinates(x-1,y);
-	}
-	public Coordinates RightOf() {
-		return new Coordinates(x+1,y);
-	}
-	public Coordinates TopOf() {
-		return new Coordinates(x,y-1);
-	}
-	public Coordinates BottomOf() {
-		return new Coordinates(x,y+1);
+	public boolean isClose(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Coordinates other = (Coordinates) obj;
+		
+		if (Math.abs(x-other.x) <= 1 && Math.abs(y-other.y) <= 1) return true;
+		else return false;
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 
+import controller.State;
 import model.Player;
 
 import java.awt.GridLayout;
@@ -47,8 +48,7 @@ public class ControlBar extends JPanel {
 		btnBeenden = new JButton("Beenden");
 		actionPanel.add(btnBeenden);
 		btnBeenden.addActionListener(e -> {
-			System.out.println(isPlaced);
-			if (isPlaced == false) JOptionPane.showMessageDialog(parent, "Klicke auf die Karte um einen Standort festzulegen");
+			if (parent.getController().getGameState().getState() == State.PLACE_HARBOUR && isPlaced == false) parent.problem("Klicke auf die Karte um einen Standort festzulegen");
 			else parent.getController().NextMove();
 		});
 		
@@ -59,6 +59,7 @@ public class ControlBar extends JPanel {
 		colour = player.getColour();
 		isPlaced = false;
 		
+		btnAngriff.setVisible(false);
 		this.setBackground(colour);
 		btnBeenden.setBackground(colour);
 		actionPanel.setBackground(colour);
@@ -74,7 +75,7 @@ public class ControlBar extends JPanel {
 			}
 		}
 		
-		lblShipsDisplay.setText("Verfügbare Schiffe: " + shipDisplay[0] + shipDisplay[1] + shipDisplay[2] + shipDisplay[3] + shipDisplay[4]);
+		lblShipsDisplay.setText("   Verfügbare Schiffe: " + shipDisplay[0] + shipDisplay[1] + shipDisplay[2] + shipDisplay[3] + shipDisplay[4]);
 		
 	}
 	

@@ -4,14 +4,14 @@ public class Ship {
 	
 	private Coordinates pos;
 	private Coordinates secPos;
-	private boolean isSelected;
+	public boolean isSelected;
 	public boolean isSunken = false;
 	private Player captain;
 
 	public Ship (Player captain, Coordinates pos) {
 		this.captain = captain;
 		this.pos = pos;
-		secPos = pos.BottomOf();
+		secPos = pos.addValue(0, 1);
 		isSelected = false;
 	}
 
@@ -26,6 +26,15 @@ public class Ship {
 	public String toString() {
 		return "Ship [pos=" + pos + ", isSelected=" + isSelected + ", isSunken=" + isSunken + ", captain=" + captain
 				+ "]";
+	}
+
+	public void setPos(Coordinates pos) {
+		
+		this.pos = pos;
+	}
+
+	public void setSecPos(Coordinates secPos) {
+		this.secPos = secPos;
 	}
 	
 }
