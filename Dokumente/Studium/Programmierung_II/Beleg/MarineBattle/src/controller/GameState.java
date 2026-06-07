@@ -19,6 +19,10 @@ public class GameState {
 	public void setState(State state) {
 		this.state = state;
 	}
+	@Override
+	public String toString() {
+		return "GameState [player=" + player + ", state=" + state + "]";
+	}
 	
 	
 	

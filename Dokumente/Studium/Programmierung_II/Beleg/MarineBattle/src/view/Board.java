@@ -28,11 +28,6 @@ public class Board extends JPanel{
 		
 		this.parent = parent;
 		this.map = map;
-		
-		// Fenstergröße berechnen: PNG-Breite * Skalierung
-        int width = map.getWidth() * tileSize;
-        int height = map.getHeight() * tileSize;
-        this.setPreferredSize(new Dimension(width, height));
         
         this.addMouseListener(new MouseAdapter() {
         	@Override
@@ -59,9 +54,7 @@ public class Board extends JPanel{
                 
         //Schiffe zeichnen
         DrawShips(g2d);   
-               
-                
-                
+   
     }
 	
 	public void DrawMap(Graphics2D g2d) {
@@ -80,8 +73,7 @@ public class Board extends JPanel{
 	}
 	
 	public void DrawShips(Graphics2D g2d) {
-		
-		System.out.println("paint");
+
 		
 		ArrayList<model.Player> allPlayers = parent.getController().players;;
 			         
@@ -98,7 +90,8 @@ public class Board extends JPanel{
 						
 						if (shipPos1 != null && shipPos2 != null) {
 							
-							if (s.isSelected == true) {g2d.setColor(Color.WHITE); System.out.println("weiß");}
+							if (s.isSelected == true) g2d.setColor(Color.WHITE);
+							else if (s.isSunken == true) g2d.setColor(p.getColour().darker());
 							else g2d.setColor(p.getColour());
 							
 							// Zeichne ein Quadrat in Spielerfarbe auf die Kachel
@@ -106,8 +99,8 @@ public class Board extends JPanel{
 							g2d.fillRect(shipPos2.getX() * tileSize, shipPos2.getY() * tileSize, tileSize, tileSize);
 							
 							
-			                    
-							// Optional: Einen kleinen schwarzen Rand um das Schiff, damit man sie besser erkennt
+			                 
+							//Einen kleinen schwarzen Rand um das Schiff, damit man sie besser erkennt
 							g2d.setColor(Color.BLACK);
 							g2d.drawRect(shipPos1.getX() * tileSize, shipPos1.getY() * tileSize, tileSize, tileSize);
 							g2d.drawRect(shipPos2.getX() * tileSize, shipPos2.getY() * tileSize, tileSize, tileSize);
@@ -119,4 +112,26 @@ public class Board extends JPanel{
 			}
 		}
 	}
+	
+	@Override
+	public Dimension getPreferredSize() {
+		
+		// Fenstergröße berechnen: PNG-Breite * Skalierung
+        int width = map.getWidth() * tileSize;
+        int height = map.getHeight() * tileSize;
+        
+        System.out.println(width + ", " + height);
+		
+		return new Dimension(width, height);
+	}
+
+	public int getTileSize() {
+		return tileSize;
+	}
+
+	public GameMap getMap() {
+		return map;
+	}
+	
+	
 }

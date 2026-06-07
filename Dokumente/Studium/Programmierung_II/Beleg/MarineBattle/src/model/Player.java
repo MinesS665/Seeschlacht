@@ -11,7 +11,10 @@ public class Player {
 
 	private Coordinates posHabour;
 	boolean itsTurn;
-	public Ship[] ships = new Ship[5];
+	private boolean isDefeated = false;
+	public int movedSteps;
+	public int aShips = 5;
+	public Ship[] ships = new Ship[aShips];
 	
 	public Player(String name, Color colour) {
 		playerCount++;
@@ -53,7 +56,27 @@ public class Player {
 		return "Player [ID=" + ID + ", name=" + name + ", colour=" + colour + ", posHabour=" + posHabour + ", itsTurn="
 				+ itsTurn + "]";
 	}
+
+	public void setSteps(int plus) {
+		
+		movedSteps += plus;
+		
+	}
 	
+	public void playerDefeat() {
+		
+		int sunkenShips = 0;
+		
+		for(Ship s : ships) {
+			if (s.isSunken == true) sunkenShips++;
+		}
+		
+		if (sunkenShips == aShips) isDefeated = true;
+	}
+
+	public boolean isDefeated() {
+		return isDefeated;
+	}
 	
 	
 }

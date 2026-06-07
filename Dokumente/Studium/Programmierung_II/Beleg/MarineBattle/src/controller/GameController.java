@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -7,6 +8,7 @@ import javax.swing.JOptionPane;
 import model.Coordinates;
 import model.GameMap;
 import model.GameModel;
+import view.Board;
 import view.MainWindow;
 import model.Player;
 import model.Ship;
@@ -18,6 +20,7 @@ public class GameController {
 	private GameModel model;
 	private GameMap map;
 	private int turn = 0;
+	private int maxSteps = 10;
 	private GameState state = new GameState();
 	private Player curPlayer;
 	private Ship curShip;
@@ -28,8 +31,8 @@ public class GameController {
 		this.view = view;
 		this.model = model;
 		this.map = map;
-		view.CreateMap(map);
 		view.setController(this);
+		view.CreateMap(map);
 	}
 	
 	public void SavePlayers(ArrayList<Player> players) {
@@ -51,8 +54,9 @@ public class GameController {
 	
 	public void NextMove() {
 		
-		curShip = null;
-		
+		curPlayer.movedSteps = 0;
+		curShip = null; //TODO: Exception
+
 		//Aktuellen Spieler festlegen
 		if (curPlayer.getID() == players.size()) {
 			turn++;
@@ -69,14 +73,21 @@ public class GameController {
 			}
 		}
 		
+		if (curPlayer.isDefeated() == true) {
+			NextMove();
+		}
+		
 		//Hafen platzieren? 
 		if (state.getState() == State.PLACE_HARBOUR) view.PlaceHarbour(curPlayer);
 		else {
 			view.NextMove(curPlayer);
 		}
+		
 	}
 
 	public void handleMapCLick(Coordinates clickPos) {
+		
+		System.out.println(state);
 		
 		if(model.getMap().getTile(clickPos) != TileTyp.WATER && state.getState() != State.MOVE) {
 			JOptionPane.showMessageDialog(view, "Pah, Landratte");
@@ -84,22 +95,32 @@ public class GameController {
 		} 
 		
 		if (state.getState() == State.PLACE_HARBOUR) placeHarbour(clickPos);
-		if (state.getState() == State.SELECT) {
+		
+		else if (state.getState() == State.SELECT) {
+			
 			curShip = SelectShip(clickPos);
+			curShip.isSelected = true;
 			if (curShip != null) {
 				state.setState(State.MOVE);
 			}
+			
+		} else if (state.getState() == State.MOVE) {
+			
+			if (curPlayer.movedSteps < maxSteps) {
+				MoveShip(clickPos, curShip);
+			} else view.problem("Du hast dich bereits " + maxSteps + " Einheiten weit bewegt.");
+		
+		} else if (state.getState() == State.ATTACK) {
+			
 		}
-		if (state.getState() == State.MOVE) MoveShip(clickPos, curShip);
 		
 		view.repaint();
-		
 	}
 
 
 	private Ship SelectShip(Coordinates click) {
-		
-		Ship curShip = null;
+
+		//TODO Exception bauen
 		int shipIndex = 0;
 		
 		for (int i = 0; i<5; i++) {
@@ -138,10 +159,13 @@ public class GameController {
 		//Vektor bestimmen
 		int dX = Integer.compare(click.getX(), curShip.getPos().getX());
 		int dY = Integer.compare(click.getY(), curShip.getPos().getY());
+		
+		int diffX = Math.abs(click.getX() - curShip.getPos().getX());
+		int diffY = Math.abs(click.getY() - curShip.getPos().getY());
 
-		if (dY <= tolerance && dX > tolerance) {
+		if (diffY <= tolerance && diffX > tolerance) {
 	        dY = 0; // Klick war fast horizontal -> erzwinge rein horizontale Bewegung
-	    } else if (dX <= tolerance && dY > tolerance) {
+	    } else if (diffX <= tolerance && diffY > tolerance) {
 	        dX = 0; // Klick war fast vertikal -> erzwinge rein vertikale Bewegung
 	    }
 		
@@ -169,6 +193,9 @@ public class GameController {
 		        break; 
 		    }
 		}
+		
+		curPlayer.setSteps(1);
+		view.getControlPanel().updateSteps(curPlayer);
 		
 	}
 
@@ -198,6 +225,49 @@ public class GameController {
 		view.repaint();
 		view.getControlPanel().setPlaced(true);
 	}
+	
+	public void Attack () {
+		
+		if (curShip == null) {
+			view.problem("Wähle zuert dein Schiff");
+			return;
+		}
+		
+		state .setState(State.ATTACK);
+		view.Attack();
+		
+	}
+	public void AttackFinished(ArrayList<Coordinates> points) {
+		view.AttackFinished();
+
+		for(Coordinates c : points) {
+			for(Player p : players) {
+				if(p != curPlayer && p.isDefeated() == false) {
+					for(Ship s : p.ships) {
+						if(s.getPos().equals(c)  || s.getSecPos().equals(c)) {
+							s.isSunken = true;
+							p.playerDefeat();
+							
+						}
+					}
+				}
+			}
+		}
+		
+		int deafPlayers = 0;
+		
+		for(Player p : players) {
+			if(p.isDefeated()) deafPlayers++;
+		}
+		
+		if (deafPlayers >= players.size()-1) EndGame();
+	}
+
+	private void EndGame() {
+		
+		view.EndScreen(curPlayer.getName());
+		System.exit(0);
+	}
 
 	public Player getCurPlayer() {
 		return curPlayer;
@@ -205,6 +275,15 @@ public class GameController {
 
 	public GameState getGameState() {
 		return state;
+	}
+
+	public int getMaxSteps() {
+		return maxSteps;
+	}
+
+	public Coordinates getCurShipPos() {
+		
+		return curShip.getPos();
 	}
 	
 	

@@ -25,6 +25,7 @@ public class ControlBar extends JPanel {
 	JButton btnBeenden;
 	JPanel actionPanel; 
 	public boolean isPlaced = false;
+	private JLabel lblSteps;
 
 	public ControlBar(MainWindow parent) {
 		
@@ -35,6 +36,9 @@ public class ControlBar extends JPanel {
 		lblShipsDisplay = new JLabel("Flotte: OOOOO");
 		add(lblShipsDisplay);
 		
+		lblSteps = new JLabel("Augeführte Züge: 0/10");
+		add(lblSteps);
+		
 		lblPlayerName = new JLabel("");
 		add(lblPlayerName);
 		
@@ -44,6 +48,7 @@ public class ControlBar extends JPanel {
 		
 		btnAngriff = new JButton("Angriff");
 		actionPanel.add(btnAngriff);
+		btnAngriff.addActionListener(e -> parent.getController().Attack());
 		
 		btnBeenden = new JButton("Beenden");
 		actionPanel.add(btnBeenden);
@@ -59,11 +64,15 @@ public class ControlBar extends JPanel {
 		colour = player.getColour();
 		isPlaced = false;
 		
-		btnAngriff.setVisible(false);
+		btnAngriff.setVisible(true);
 		this.setBackground(colour);
 		btnBeenden.setBackground(colour);
+		btnAngriff.setBackground(colour);
 		actionPanel.setBackground(colour);
 		lblPlayerName.setText(player.getName());
+		lblSteps.setVisible(true);
+		updateSteps(player);
+		
 		
 		String[] shipDisplay = new String[5];
 		
@@ -84,6 +93,7 @@ public class ControlBar extends JPanel {
 		NextMove(player);
 		
 		lblShipsDisplay.setText("Von wo aus soll deine Flotte operieren?");
+		lblSteps.setVisible(false);
 		btnAngriff.setVisible(false);
 		
 	}
@@ -92,6 +102,12 @@ public class ControlBar extends JPanel {
 		this.isPlaced = isPlaced;
 	}
 	
+	public void updateSteps(Player player) {
+		lblSteps.setText("Züge: " + player.movedSteps + "/" + parent.getController().getMaxSteps());
+	}
 	
+	public void setAttBtnVis(boolean vis) {
+		btnAngriff.setVisible(vis);
+	}
 
 }

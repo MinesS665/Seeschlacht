@@ -20,7 +20,7 @@ public class PlayerRow extends JPanel {
 	private JComboBox<String> comboPickColor;
 	private JButton btnRemovePlayer;
 	
-	String[] colors = {"Farbe wählen", "Rot", "Orange", "Gelb", "Lila", "Schwarz", "Weiß", "Rosa", "Magenta", "Cyan", "Grau"};
+	String[] colors = {"Farbe wählen", "Rot", "Orange", "Gelb", "Grün", "Blau", "Lila", "Rosa", "Magenta", "Cyan", "Grau"};
 	
 	public PlayerRow(int index) {
 		
@@ -59,16 +59,16 @@ public class PlayerRow extends JPanel {
 		String colorName = (String) comboPickColor.getSelectedItem();
 				
 		return switch (colorName) {
-			case "Rot" -> Color.RED;
-			case "Orange" -> Color.ORANGE;
-			case "Gelb" -> Color.YELLOW;
-			case "Lila" -> new Color(128, 0, 128);
-			case "Schwarz" -> Color.BLACK;
-			case "Weiß" -> Color.WHITE;
-			case "Rosa" -> Color.PINK;
-			case "Magenta" -> Color.MAGENTA;
-			case "Cyan" -> Color.CYAN;
-			case "Grau" -> Color.DARK_GRAY;
+			case "Rot" -> new Color(200, 70, 70);
+			case "Orange" -> new Color(200, 130, 70);
+			case "Gelb" -> new Color(210, 210, 30);
+			case "Grün" -> new Color(100, 200, 70);
+			case "Blau" -> new Color(70, 200, 200);
+			case "Lila" -> new Color(150, 70, 200);
+			case "Rosa" -> new Color(200, 70, 150);
+			case "Magenta" -> new Color(200, 70, 115);
+			case "Cyan" -> new Color(70, 200, 160);
+			case "Grau" -> Color.GRAY;
 			default -> Color.GRAY; 
 		};
 	}

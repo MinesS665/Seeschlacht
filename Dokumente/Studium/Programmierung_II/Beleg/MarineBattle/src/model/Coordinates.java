@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Point;
 import java.util.Objects;
 
 public class Coordinates {
@@ -53,6 +54,9 @@ public class Coordinates {
 		return "Coordinates [x=" + x + ", y=" + y + "]";
 	}
 	
-	
+	public static Coordinates toCoordinates(Point p, int tileSize) {
+		
+		return new Coordinates(p.x/tileSize, p.y/tileSize);
+	}
 	
 }
