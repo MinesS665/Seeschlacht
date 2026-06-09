@@ -1,16 +1,11 @@
 package view;
 
 import java.awt.CardLayout;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import controller.GameController;
+import controller.State;
 import model.GameMap;
-import model.GameModel;
 import model.Player;
 
 import java.awt.BorderLayout;
@@ -21,7 +16,7 @@ public class MainWindow extends JFrame{
 	private CardLayout cardLayout = new CardLayout();
 	private JPanel mainPanel = new JPanel(cardLayout);
 	private JPanel gamePanel = new JPanel(new BorderLayout());
-	private JPanel boardPanel;
+	private JPanel mapPanel;
 	private JPanel controlPanel;
 	private JPanel attackPanel;
 	
@@ -30,7 +25,6 @@ public class MainWindow extends JFrame{
 	public MainWindow() {
 		
 		//Fenster erstellen
-		JFrame mainFrame = new JFrame();
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Marine Battle");
 		this.getContentPane().add(mainPanel);
@@ -42,47 +36,39 @@ public class MainWindow extends JFrame{
 		//(Leeres) Spielbrett hinzufügen
 		mainPanel.add(gamePanel, "GAME");
 		
-		this.pack(); 
-		this.setLocationRelativeTo(null);
-		
 		EnterPlayerEditor();
 	}
 	
 	public void LeavePlayerEditor() {
 		cardLayout.show(mainPanel, "GAME");
-		this.pack(); 
-		this.setLocationRelativeTo(null);
 	}
 	
 	public void EnterPlayerEditor() {
 		cardLayout.show(mainPanel, "P-MENU");
-		this.pack(); 
-		this.setLocationRelativeTo(null);
 	}
 
+	//Karten-Panel erstellen
 	public void CreateMap(GameMap map) {
 		
-		boardPanel = new Board(this, map);
-		attackPanel = new AttackPanel(controller, (Board)boardPanel);
-		
 		JLayeredPane layerPane = new JLayeredPane();
-		
-		java.awt.Dimension boardSize = boardPanel.getPreferredSize();
+		java.awt.Dimension boardSize = mapPanel.getPreferredSize();
 		layerPane.setPreferredSize(boardSize);
 		
-		boardPanel.setBounds(0, 0, boardSize.width, boardSize.height);
+		//Karte besteht aus Map und Attack-Panel
+		mapPanel = new MapView(this, map);
+		attackPanel = new AttackPanel(controller, (MapView)mapPanel);
+
+		mapPanel.setBounds(0, 0, boardSize.width, boardSize.height);
 	    attackPanel.setBounds(0, 0, boardSize.width, boardSize.height);
 		
-	    layerPane.add(boardPanel, JLayeredPane.DEFAULT_LAYER);
+	    //Layer verwenden um Attack panel mit Map zu synchronisieren und zusammenzufassen
+	    layerPane.add(mapPanel, JLayeredPane.DEFAULT_LAYER);
 	    layerPane.add(attackPanel, JLayeredPane.DRAG_LAYER);
 		attackPanel.setVisible(false);
 	    
 		gamePanel.add(layerPane, BorderLayout.CENTER);
 		controlPanel = new ControlBar(this);
 		gamePanel.add(controlPanel, BorderLayout.SOUTH);
-		
-		this.pack(); 
-		this.setLocationRelativeTo(null); // Zentriert das Fenster auf dem Bildschirm
 		
 		gamePanel.revalidate();
 		gamePanel.repaint();
@@ -117,6 +103,7 @@ public class MainWindow extends JFrame{
 	public void Attack() {
 		
 		attackPanel.setVisible(true);
+		((ControlBar) controlPanel).setFinishBtnVis(false);;
 		
 	}
 	
@@ -124,19 +111,25 @@ public class MainWindow extends JFrame{
 		
 		attackPanel.setVisible(false);
 		((ControlBar) controlPanel).setAttBtnVis(false);
+		((ControlBar) controlPanel).setFinishBtnVis(true);;
 
 	}
 
 	public JPanel getBoardPanel() {
-		return boardPanel;
+		return mapPanel;
 	}
 	
-	public void EndScreen (String name) {
-		JOptionPane.showMessageDialog(
-			    this,
-			    "🏆 DER SIEGER STEHT FEST! 🏆\n\n" + name + " hat die feindliche Flotte versenkt!", 
-			    "Marine Battle - Spiel beendet", 
-			    JOptionPane.INFORMATION_MESSAGE
-			);
+	public void infoScreen (String info) {
+		JOptionPane.showMessageDialog(this, info);
+	}
+	public void infoScreen (String name, State state) {
+		
+		if (state == State.END) {
+			JOptionPane.showMessageDialog(	this,
+											"🏆 DER SIEGER STEHT FEST! 🏆\n\n" + name + " hat die feindliche Flotte versenkt!", 
+				    						"Marine Battle - Spiel beendet", 
+				    						JOptionPane.INFORMATION_MESSAGE
+				);
+		} else if (state == State.ATTACK) JOptionPane.showMessageDialog(this, name + " wurde besiegt");
 	}
 }

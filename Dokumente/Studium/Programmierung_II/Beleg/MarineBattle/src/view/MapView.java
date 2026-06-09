@@ -16,7 +16,7 @@ import model.TileTyp;
 import java.awt.Color;
 import java.awt.Dimension;
 
-public class Board extends JPanel{
+public class MapView extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -24,7 +24,8 @@ public class Board extends JPanel{
 	private int tileSize = 4;
 	private GameMap map;
 
-	public Board(MainWindow parent, GameMap map) {
+	//Konstruktor
+	public MapView(MainWindow parent, GameMap map) {
 		
 		this.parent = parent;
 		this.map = map;
@@ -45,10 +46,6 @@ public class Board extends JPanel{
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		
-		//Aktuellen Spieler ermitteln
-		model.Player curPlayer = parent.getController().getCurPlayer();		
-		Coordinates harbourPos = (curPlayer != null) ? curPlayer.getPosHabour() : null;
-		
 		//Map zeichnen
         DrawMap(g2d);
                 
@@ -57,10 +54,14 @@ public class Board extends JPanel{
    
     }
 	
+	//Map erstellen
 	public void DrawMap(Graphics2D g2d) {
+		
+		//Pixelweise Map zeichnen
 		for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 
+            	//Entsprechende Farbe festlegen
             	TileTyp type = map.getTile(x, y);
                 
                 if (type == TileTyp.WATER) g2d.setColor(new Color(127, 214, 209));
@@ -72,55 +73,53 @@ public class Board extends JPanel{
 		}
 	}
 	
+	//Schiff über die Karte zeichnen
 	public void DrawShips(Graphics2D g2d) {
 
-		
 		ArrayList<model.Player> allPlayers = parent.getController().players;;
 			         
-		if (allPlayers != null) {
-			for (model.Player p : allPlayers) {
-				
+		if (allPlayers == null) return;
+		
+		for (model.Player p : allPlayers) {
 			                 
-				// Schleife durch alle Schiffe dieses Spielers
-				for (Ship s : p.ships) {
-					if (s != null) {
+			//Schleife durch alle Schiffe eines Spielers
+			for (Ship s : p.ships) {
+				if (s != null) {
+					
+					Coordinates shipPos1 = s.pos;
+					Coordinates shipPos2 = s.secPos;
+					
+					if (shipPos1 != null && shipPos2 != null) {
 						
-						Coordinates shipPos1 = s.getPos();
-						Coordinates shipPos2 = s.getSecPos();
+						if (s.isSelected == true) g2d.setColor(Color.WHITE);
+						else if (s.isSunken == true) g2d.setColor(p.getColour().darker());
+						else g2d.setColor(p.getColour());
 						
-						if (shipPos1 != null && shipPos2 != null) {
-							
-							if (s.isSelected == true) g2d.setColor(Color.WHITE);
-							else if (s.isSunken == true) g2d.setColor(p.getColour().darker());
-							else g2d.setColor(p.getColour());
-							
-							// Zeichne ein Quadrat in Spielerfarbe auf die Kachel
-							g2d.fillRect(shipPos1.getX() * tileSize, shipPos1.getY() * tileSize, tileSize, tileSize);
-							g2d.fillRect(shipPos2.getX() * tileSize, shipPos2.getY() * tileSize, tileSize, tileSize);
-							
-							
-			                 
-							//Einen kleinen schwarzen Rand um das Schiff, damit man sie besser erkennt
-							g2d.setColor(Color.BLACK);
-							g2d.drawRect(shipPos1.getX() * tileSize, shipPos1.getY() * tileSize, tileSize, tileSize);
-							g2d.drawRect(shipPos2.getX() * tileSize, shipPos2.getY() * tileSize, tileSize, tileSize);
-							// Farbe wieder zurücksetzen für das nächste Schiff
-							g2d.setColor(p.getColour()); 
-						}
+						//Zeichne ein Quadrat in Spielerfarbe
+						g2d.fillRect(shipPos1.getX() * tileSize, shipPos1.getY() * tileSize, tileSize, tileSize);
+						g2d.fillRect(shipPos2.getX() * tileSize, shipPos2.getY() * tileSize, tileSize, tileSize);
+						
+						//schwarzen Rand um das Schiff
+						g2d.setColor(Color.BLACK);
+						g2d.drawRect(shipPos1.getX() * tileSize, shipPos1.getY() * tileSize, tileSize, tileSize);
+						g2d.drawRect(shipPos2.getX() * tileSize, shipPos2.getY() * tileSize, tileSize, tileSize);
+						
+						//Farbe wieder zurücksetzen
+						g2d.setColor(p.getColour()); 
 					}
 				}
 			}
-		}
+			}
+		
 	}
 	
 	@Override
+	//Fenstergröße berechnen: PNG-Breite * Skalierung
 	public Dimension getPreferredSize() {
 		
-		// Fenstergröße berechnen: PNG-Breite * Skalierung
+		//Fenstergröße berechnen: PNG-Breite * Skalierung
         int width = map.getWidth() * tileSize;
         int height = map.getHeight() * tileSize;
-        
-        System.out.println(width + ", " + height);
 		
 		return new Dimension(width, height);
 	}

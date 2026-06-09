@@ -1,134 +1,134 @@
 package controller;
 
-import java.awt.Point;
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
 
-import model.Coordinates;
-import model.GameMap;
-import model.GameModel;
-import view.Board;
+import model.*;
 import view.MainWindow;
-import model.Player;
-import model.Ship;
-import model.TileTyp;
+
 
 public class GameController {
 	
 	private MainWindow view;
 	private GameModel model;
 	private GameMap map;
-	private int turn = 0;
-	private int maxSteps = 10;
-	private GameState state = new GameState();
+	
+	private State curState = State.PLACE_HARBOUR;
 	private Player curPlayer;
 	private Ship curShip;
 	public ArrayList<Player> players;
 
+	private int maxSteps = 10;
 	
+	//Konstruktor
 	public GameController (MainWindow view, GameModel model, model.GameMap map) {
+		
 		this.view = view;
 		this.model = model;
 		this.map = map;
+		
 		view.setController(this);
 		view.CreateMap(map);
 	}
 	
-	public void SavePlayers(ArrayList<Player> players) {
-		model.UpdatePlayers(players);
-		StartGame();
+	//Spieler speichern, Spiel starten
+	public void savePlayers(ArrayList<Player> players) {
 		
+		model.UpdatePlayers(players);
+		startGame();
 	}
 	
-	public void StartGame() {
+	//Spiel Starten
+	private void startGame() {
 		
 		players = model.getPlayers();
-		state.setState(State.PLACE_HARBOUR);
+		curState = State.PLACE_HARBOUR;
 		
+		//Ersten Spieler auswählen
 		curPlayer = players.get(0);
 		
 		view.PlaceHarbour(curPlayer);
-
 	}
 	
-	public void NextMove() {
+	//Neuen Zug beginnen
+	public void nextMove() {
 		
 		curPlayer.movedSteps = 0;
 		curShip = null; //TODO: Exception
+		undoSelect();
 
 		//Aktuellen Spieler festlegen
 		if (curPlayer.getID() == players.size()) {
-			turn++;
 			
-			state.setState(State.SELECT);
+			curState  = State.SELECT;
 			curPlayer = players.get(0);
 			
 		} else {
 			
 			curPlayer = players.get(curPlayer.getID());
 			
-			if (state.getState() != State.PLACE_HARBOUR) {
-				state.setState(State.SELECT);
+			if (curState != State.PLACE_HARBOUR) {
+				curState = State.SELECT;
 			}
 		}
 		
+		//Wenn Spieler bereits besiegt ist diesen überspringen
 		if (curPlayer.isDefeated() == true) {
-			NextMove();
+			nextMove();
 		}
 		
-		//Hafen platzieren? 
-		if (state.getState() == State.PLACE_HARBOUR) view.PlaceHarbour(curPlayer);
-		else {
-			view.NextMove(curPlayer);
-		}
-		
+		//Hafen platzieren? Enstsprechnde Anzeige aufrufen
+		if (curState == State.PLACE_HARBOUR) view.PlaceHarbour(curPlayer);
+		else view.NextMove(curPlayer);
 	}
 
+	//Auf Klicks reagieren
 	public void handleMapCLick(Coordinates clickPos) {
 		
-		System.out.println(state);
-		
-		if(model.getMap().getTile(clickPos) != TileTyp.WATER && state.getState() != State.MOVE) {
+		//Land blockieren
+		if(model.getMap().getTile(clickPos) != TileTyp.WATER && curState != State.MOVE) {
 			JOptionPane.showMessageDialog(view, "Pah, Landratte");
 			return;
 		} 
 		
-		if (state.getState() == State.PLACE_HARBOUR) placeHarbour(clickPos);
-		
-		else if (state.getState() == State.SELECT) {
+		//Klick entsprechend dem Spielstatus interpretieren 
+		if (curState == State.PLACE_HARBOUR) {
+			placeHarbour(clickPos);
+		}
+		else if (curState == State.SELECT) {
 			
-			curShip = SelectShip(clickPos);
-			curShip.isSelected = true;
+			curShip = selectShip(clickPos);	
+			
 			if (curShip != null) {
-				state.setState(State.MOVE);
+				curShip.isSelected = true;
+				curState = State.MOVE;
 			}
-			
-		} else if (state.getState() == State.MOVE) {
+		} else if (curState == State.MOVE) {
 			
 			if (curPlayer.movedSteps < maxSteps) {
-				MoveShip(clickPos, curShip);
-			} else view.problem("Du hast dich bereits " + maxSteps + " Einheiten weit bewegt.");
-		
-		} else if (state.getState() == State.ATTACK) {
-			
+				moveShip(clickPos, curShip);
+			} else {
+				view.problem("Du hast dich bereits " + maxSteps + " Einheiten weit bewegt.");
+			}
 		}
 		
 		view.repaint();
 	}
 
-
-	private Ship SelectShip(Coordinates click) {
+	//Schiff auswählen
+	private Ship selectShip(Coordinates click) {
 
 		//TODO Exception bauen
-		int shipIndex = 0;
+		int shipIndex = -1;
 		
+		//Nach Schiff in der Nähe suchen
 		for (int i = 0; i<5; i++) {
-			if (click.isClose(curPlayer.ships[i].getPos()) || click.isClose(curPlayer.ships[i].getSecPos())) {
+			if (click.isClose(curPlayer.ships[i].pos) || click.isClose(curPlayer.ships[i].secPos)) {
 				shipIndex = i;
 			}
 		}
 		
+		if (shipIndex == -1) return null;
 		curShip = curPlayer.ships[shipIndex];
 		
 		if (curShip.isSunken == true) {
@@ -136,47 +136,43 @@ public class GameController {
 			return null;
 		}
 		
-		for(Player p : players) {
-			for (int i = 0; i<5; i++) {
-				p.ships[i].isSelected = false;
-			}
-		}
+		undoSelect();
 		
 		return curShip;
-		
 	}
 
-	private void MoveShip(Coordinates click, Ship curShip) {
+	//Bewegung des Shiffes steuern
+	private void moveShip(Coordinates click, Ship curShip) {
 		
 		int moveRange = 2;
 		int tolerance = 2;
 		
-		view.NextMove(curPlayer);		
+		//Richtungsvektor mit Länge 1 bestimmen
+		int dX = Integer.compare(click.getX(), curShip.pos.getX());
+		int dY = Integer.compare(click.getY(), curShip.pos.getY());
+			
 		curShip.isSelected = true;
-
-		System.out.println(curShip);
-
-		//Vektor bestimmen
-		int dX = Integer.compare(click.getX(), curShip.getPos().getX());
-		int dY = Integer.compare(click.getY(), curShip.getPos().getY());
 		
-		int diffX = Math.abs(click.getX() - curShip.getPos().getX());
-		int diffY = Math.abs(click.getY() - curShip.getPos().getY());
+		//Entfernung Klick - Schiff bestimmen
+		int diffX = Math.abs(click.getX() - curShip.pos.getX());
+		int diffY = Math.abs(click.getY() - curShip.pos.getY());
 
+		//Gerade Bewegung erzeingen wenn Klick fast gerade aus war
 		if (diffY <= tolerance && diffX > tolerance) {
-	        dY = 0; // Klick war fast horizontal -> erzwinge rein horizontale Bewegung
+	        dY = 0;
 	    } else if (diffX <= tolerance && diffY > tolerance) {
-	        dX = 0; // Klick war fast vertikal -> erzwinge rein vertikale Bewegung
+	        dX = 0;
 	    }
 		
-		
+		//Gültigkeit prüfen
 		if (dX == 0 && dY == 0) {
 		    return;
 		}
 
-		int nextX = curShip.getPos().getX();
-		int nextY = curShip.getPos().getY();
+		int nextX = curShip.pos.getX();
+		int nextY = curShip.pos.getY();
 
+		//moveRange x einen Schritt Richtung Klick machen
 		for (int i = 0; i < moveRange; i++) {
 		    nextX += dX;
 		    nextY += dY;
@@ -186,25 +182,27 @@ public class GameController {
 		        break; 
 		    }
 		    
+		    //Auf Land blockieren
 		    if (map.getTile(nextX, nextY) == TileTyp.WATER) {
-		        curShip.setSecPos(curShip.getPos());
-		        curShip.setPos(new Coordinates(nextX, nextY));
+		        curShip.secPos = curShip.pos;
+		        curShip.pos = new Coordinates(nextX, nextY);
 		    } else {
 		        break; 
 		    }
 		}
 		
+		//Schritte aktualisieren
 		curPlayer.setSteps(1);
 		view.getControlPanel().updateSteps(curPlayer);
-		
 	}
 
-	public void placeHarbour(Coordinates c) {
+	//Startrunde koordinieren
+	private void placeHarbour(Coordinates c) {
 		
 		int x = c.getX();
 		int y = c.getY();
 		
-		
+		//prüfen, ob im Umkreis genaug Wasser ist 
 		for (int i = -5; i<=5; i++) {
 			for (int j = -2; j<=2; j++) {
 				if(model.getMap().getTile(x+i,y+j) != TileTyp.WATER) {
@@ -214,6 +212,7 @@ public class GameController {
 			}
 		}
 		
+		//Hafen setzten und Schiffe generieren
 		curPlayer.setPosHabour(new Coordinates(x,y));
 		
 		curPlayer.ships[0] = new Ship(curPlayer, new Coordinates(x-4,y));
@@ -226,46 +225,66 @@ public class GameController {
 		view.getControlPanel().setPlaced(true);
 	}
 	
-	public void Attack () {
+	//Angriff einleiten
+	public void attackStart () {
 		
 		if (curShip == null) {
 			view.problem("Wähle zuert dein Schiff");
 			return;
 		}
-		
-		state .setState(State.ATTACK);
-		view.Attack();
-		
-	}
-	public void AttackFinished(ArrayList<Coordinates> points) {
-		view.AttackFinished();
 
+		view.Attack();
+	}
+	
+	//Ergebnis des Angriffes auswerten
+	public void attackFinished(ArrayList<Coordinates> points) {
+		
+		view.AttackFinished();
+		
+		//Für jeden Punkt überprüfen, ob ein fremdes Shiff getroffen wurde
 		for(Coordinates c : points) {
 			for(Player p : players) {
 				if(p != curPlayer && p.isDefeated() == false) {
 					for(Ship s : p.ships) {
-						if(s.getPos().equals(c)  || s.getSecPos().equals(c)) {
+						if(s.pos.equals(c)  || s.secPos.equals(c)) {
 							s.isSunken = true;
-							p.playerDefeat();
-							
+							if (p.playerDefeat() == true) {
+								view.infoScreen(p.getName(), curState);
+							}
 						}
 					}
 				}
 			}
 		}
 		
+		//Verbleibende Spieler prüfen
 		int deafPlayers = 0;
 		
 		for(Player p : players) {
 			if(p.isDefeated()) deafPlayers++;
 		}
 		
-		if (deafPlayers >= players.size()-1) EndGame();
+		if (deafPlayers >= players.size()-1) endGame();
+		
+		nextMove();
+	}
+	
+	//Alle Schiffe abwählen
+	private void undoSelect() {
+		
+		for(Player p : players) {
+			for (int i = 0; i<5; i++) {
+				if (p.ships[i] != null) p.ships[i].isSelected = false;
+			}
+		}
 	}
 
-	private void EndGame() {
+	//Spiel beenden
+	private void endGame() {
 		
-		view.EndScreen(curPlayer.getName());
+		curState = State.END;
+		
+		view.infoScreen(curPlayer.getName(), curState);
 		System.exit(0);
 	}
 
@@ -273,8 +292,8 @@ public class GameController {
 		return curPlayer;
 	}
 
-	public GameState getGameState() {
-		return state;
+	public State getState() {
+		return curState;
 	}
 
 	public int getMaxSteps() {
@@ -283,7 +302,9 @@ public class GameController {
 
 	public Coordinates getCurShipPos() {
 		
-		return curShip.getPos();
+		if (curShip == null) return null;
+		
+		return curShip.pos;
 	}
 	
 	

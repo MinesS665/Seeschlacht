@@ -5,5 +5,6 @@ public enum State {
 	PLACE_HARBOUR,
 	SELECT,
 	MOVE,
-	ATTACK
+	ATTACK,
+	END
 }

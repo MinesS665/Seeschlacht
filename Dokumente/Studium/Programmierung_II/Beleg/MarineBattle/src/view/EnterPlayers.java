@@ -1,19 +1,11 @@
 package view;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.BorderLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-
-import model.GameModel;
-import model.Player;
-
-import javax.swing.JSplitPane;
-import javax.swing.JButton;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
+import model.Player;
 
 public class EnterPlayers extends JPanel{
 	
@@ -21,12 +13,12 @@ public class EnterPlayers extends JPanel{
 	
 	//Verbindung zum MainWindow herstellen
 	private static MainWindow parent;
-	static JPanel mainPanel;
+	private static JPanel mainPanel;
 	
 	//globale Variablen
-	static int maxPlayers = 10;
-	static int visiblePlayers = 2;
-	static PlayerRow[] players = new PlayerRow[maxPlayers];
+	private static int maxPlayers = 10;
+	private static int visiblePlayers = 2;
+	private static PlayerRow[] players = new PlayerRow[maxPlayers];
 
 	//Objekte und Layout generieren
 	public EnterPlayers(MainWindow parent) {
@@ -111,7 +103,7 @@ public class EnterPlayers extends JPanel{
 		}
 		
 		if (x == 0) {
-			parent.getController().SavePlayers(finalPlayers);
+			parent.getController().savePlayers(finalPlayers);
 			parent.LeavePlayerEditor();
 		}
 		

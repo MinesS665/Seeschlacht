@@ -12,6 +12,7 @@ public class GameMap {
 	private int width;
 	private int height;
 	
+	//Konstruktor
 	public GameMap(String imagePath) {
 		try {
 			//Lade PNG aus dem Assets-Ordner
@@ -37,29 +38,37 @@ public class GameMap {
 				}
 			}
 		} catch (IOException e) {
-			//TODO Fenster anzeigen
+			//TODO Fenster bauen
 			System.err.println("Map konnte nicht geladen werden!");
 		}
 	}
 	
+	//Vergleichen ob Pixel blau ist
 	private boolean isBlue(Color color) {
 		return color.equals(new Color(127, 214, 209));
 	}
 	
+	//TileTyp zurückgeben
 	public TileTyp getTile (int x, int y) {
+		
 		if (x >= 0 && x < width && y >= 0 && y < height) {
             return grid[x][y];
         }
-        return TileTyp.LAND; // Außerhalb der Map blockieren
+		
+		// Außerhalb der Map blockieren
+        return TileTyp.LAND;
 	}
 	
+	//TileTyp zurückgeben
 	public TileTyp getTile(Coordinates c) {
 		if (c.getX() >= 0 && c.getX() < width && c.getY() >= 0 && c.getY()< height) {
             return grid[c.getX()][c.getY()];
         }
-        return TileTyp.LAND; // Außerhalb der Map blockieren
+		// Außerhalb der Map blockieren
+        return TileTyp.LAND;
 	}
 
+	//Getter
 	public int getWidth() {
 		return width;
 	}

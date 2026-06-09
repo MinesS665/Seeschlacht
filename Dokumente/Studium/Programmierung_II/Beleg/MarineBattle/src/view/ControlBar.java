@@ -3,14 +3,12 @@ package view;
 import java.awt.Color;
 
 import javax.swing.JPanel;
+import java.awt.GridLayout;
+import javax.swing.JLabel;
+import javax.swing.JButton;
 
 import controller.State;
 import model.Player;
-
-import java.awt.GridLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JButton;
 
 public class ControlBar extends JPanel {
 
@@ -18,15 +16,16 @@ public class ControlBar extends JPanel {
 	
 	private MainWindow parent;
 	private Color colour;
+	public boolean isPlaced = false;
 	
 	private JLabel lblPlayerName;
 	private JLabel lblShipsDisplay;
-	private JButton btnAngriff;
-	JButton btnBeenden;
-	JPanel actionPanel; 
-	public boolean isPlaced = false;
 	private JLabel lblSteps;
+	private JButton btnAngriff;
+	private JButton btnBeenden;
+	private JPanel actionPanel; 
 
+	//Konstruktor
 	public ControlBar(MainWindow parent) {
 		
 		this.parent = parent;
@@ -48,17 +47,22 @@ public class ControlBar extends JPanel {
 		
 		btnAngriff = new JButton("Angriff");
 		actionPanel.add(btnAngriff);
-		btnAngriff.addActionListener(e -> parent.getController().Attack());
+		btnAngriff.addActionListener(e -> parent.getController().attackStart());
 		
 		btnBeenden = new JButton("Beenden");
 		actionPanel.add(btnBeenden);
 		btnBeenden.addActionListener(e -> {
-			if (parent.getController().getGameState().getState() == State.PLACE_HARBOUR && isPlaced == false) parent.problem("Klicke auf die Karte um einen Standort festzulegen");
-			else parent.getController().NextMove();
+			if (parent.getController().getState() == State.PLACE_HARBOUR && isPlaced == false) {
+				parent.problem("Klicke auf die Karte um einen Standort festzulegen");
+			}
+			else {
+				parent.getController().nextMove();
+			}
 		});
 		
 	}
 	
+	//Schaltfläche für nächsten Spieler anpassen
 	public void NextMove(Player player) {
 		
 		colour = player.getColour();
@@ -73,9 +77,8 @@ public class ControlBar extends JPanel {
 		lblSteps.setVisible(true);
 		updateSteps(player);
 		
-		
+		//Schiffsübersicht erstellen
 		String[] shipDisplay = new String[5];
-		
 		
 		for (int i = 0; i < 5; i++) {
 			if (player.ships[i] != null) {
@@ -88,6 +91,7 @@ public class ControlBar extends JPanel {
 		
 	}
 	
+	//Layout zu Beginn svereinfachen
 	public void PlaceHarbour(Player player) {
 		
 		NextMove(player);
@@ -109,5 +113,7 @@ public class ControlBar extends JPanel {
 	public void setAttBtnVis(boolean vis) {
 		btnAngriff.setVisible(vis);
 	}
-
+	public void setFinishBtnVis(boolean vis) {
+		btnBeenden.setVisible(vis);
+	}
 }
