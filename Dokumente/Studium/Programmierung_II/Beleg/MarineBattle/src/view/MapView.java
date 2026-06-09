@@ -39,6 +39,7 @@ public class MapView extends JPanel{
         		parent.getController().handleMapCLick(new Coordinates(xPixel, yPixel));
         	}
         });
+        
 	}
 	
 	@Override

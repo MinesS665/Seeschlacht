@@ -36,6 +36,9 @@ public class MainWindow extends JFrame{
 		//(Leeres) Spielbrett hinzufügen
 		mainPanel.add(gamePanel, "GAME");
 		
+		this.pack();
+		this.setLocationRelativeTo(null);
+		
 		EnterPlayerEditor();
 	}
 	
@@ -49,17 +52,17 @@ public class MainWindow extends JFrame{
 
 	//Karten-Panel erstellen
 	public void CreateMap(GameMap map) {
-		
-		JLayeredPane layerPane = new JLayeredPane();
-		java.awt.Dimension boardSize = mapPanel.getPreferredSize();
-		layerPane.setPreferredSize(boardSize);
-		
+
 		//Karte besteht aus Map und Attack-Panel
 		mapPanel = new MapView(this, map);
 		attackPanel = new AttackPanel(controller, (MapView)mapPanel);
 
-		mapPanel.setBounds(0, 0, boardSize.width, boardSize.height);
-	    attackPanel.setBounds(0, 0, boardSize.width, boardSize.height);
+		JLayeredPane layerPane = new JLayeredPane();
+		java.awt.Dimension mapSize = mapPanel.getPreferredSize();
+		layerPane.setPreferredSize(mapSize);
+		
+		mapPanel.setBounds(0, 0, mapSize.width, mapSize.height);
+	    attackPanel.setBounds(0, 0, mapSize.width, mapSize.height);
 		
 	    //Layer verwenden um Attack panel mit Map zu synchronisieren und zusammenzufassen
 	    layerPane.add(mapPanel, JLayeredPane.DEFAULT_LAYER);
@@ -71,7 +74,10 @@ public class MainWindow extends JFrame{
 		gamePanel.add(controlPanel, BorderLayout.SOUTH);
 		
 		gamePanel.revalidate();
-		gamePanel.repaint();
+	    gamePanel.repaint();
+	    
+	    this.pack();
+	    this.setLocationRelativeTo(null);
 	}
 
 	public void PlaceHarbour(Player p) {
