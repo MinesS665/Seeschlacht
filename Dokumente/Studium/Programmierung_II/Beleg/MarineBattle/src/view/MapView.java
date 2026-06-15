@@ -21,7 +21,7 @@ public class MapView extends JPanel{
 	private static final long serialVersionUID = 1L;
 
 	private MainWindow parent;	
-	private int tileSize = 4;
+	private int tileSize = 9;
 	private GameMap map;
 
 	//Konstruktor

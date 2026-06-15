@@ -45,7 +45,24 @@ public class GameMap {
 	
 	//Vergleichen ob Pixel blau ist
 	private boolean isBlue(Color color) {
-		return color.equals(new Color(127, 214, 209));
+		if (color == null) return false;
+
+	    // Das Ziel-Blau aus deinem Spiel
+	    int targetR = 127;
+	    int targetG = 214;
+	    int targetB = 209;
+	    
+	    // Wie stark darf die Farbe maximal abweichen? 
+	    // Ein Wert zwischen 10 und 30 ist meistens ideal.
+	    int tolerance = 25; 
+
+	    // Die absolute Differenz für jeden Kanal berechnen
+	    int diffR = Math.abs(color.getRed() - targetR);
+	    int diffG = Math.abs(color.getGreen() - targetG);
+	    int diffB = Math.abs(color.getBlue() - targetB);
+
+	    // Wenn JEDER Kanal innerhalb der Toleranz liegt, ist es für uns "Blau"
+	    return diffR <= tolerance && diffG <= tolerance && diffB <= tolerance;
 	}
 	
 	//TileTyp zurückgeben

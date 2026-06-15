@@ -31,15 +31,17 @@ public class EnterPlayers extends JPanel{
 		lblEditPlayers.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblEditPlayers, BorderLayout.NORTH);
 		
-		JSplitPane optionsPane = new JSplitPane();
-		optionsPane.setResizeWeight(0.5);
-		add(optionsPane, BorderLayout.SOUTH);
+		JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+		add(buttonPanel, BorderLayout.SOUTH);
 		
 		JButton btnNewPlayer = new JButton("Neuer Spieler");
-		optionsPane.setLeftComponent(btnNewPlayer);
+		buttonPanel.add(btnNewPlayer);
+		
+		JButton btnLoadGame = new JButton("Spielstand laden");
+		buttonPanel.add(btnLoadGame);
 		
 		JButton btnFinish = new JButton("Fertig");
-		optionsPane.setRightComponent(btnFinish);
+		buttonPanel.add(btnFinish);
 		
 		mainPanel = new JPanel();
 		add(mainPanel, BorderLayout.CENTER);
@@ -52,6 +54,12 @@ public class EnterPlayers extends JPanel{
 			
 			if (i>=visiblePlayers) players[i].setVisible(false);
 		}
+		
+		btnLoadGame.addActionListener(e -> {
+			boolean sucess = parent.getController().loadGame();
+			if (!sucess) parent.problem("Spielstand konnte nicht geladen werden");
+			else parent.LeavePlayerEditor();
+			});
 		
 		//neue Spieler hinzufügen
 		btnNewPlayer.addActionListener(e -> {

@@ -1,8 +1,14 @@
 package controller;
 
+
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.xml.parsers.ParserConfigurationException;
 
+import DOM.Reader;
+import DOM.SaveGame;
+import org.xml.sax.SAXException;
 import model.*;
 import view.MainWindow;
 
@@ -123,8 +129,10 @@ public class GameController {
 		
 		//Nach Schiff in der Nähe suchen
 		for (int i = 0; i<5; i++) {
-			if (click.isClose(curPlayer.ships[i].pos) || click.isClose(curPlayer.ships[i].secPos)) {
-				shipIndex = i;
+			if (curPlayer.ships[i] != null) { 
+		        if ((click.isClose(curPlayer.ships[i].pos) || click.isClose(curPlayer.ships[i].secPos)) && !curPlayer.ships[i].isSunken) {
+		            shipIndex = i;
+		        }
 			}
 		}
 		
@@ -246,7 +254,7 @@ public class GameController {
 			for(Player p : players) {
 				if(p != curPlayer && p.isDefeated() == false) {
 					for(Ship s : p.ships) {
-						if(s.pos.equals(c)  || s.secPos.equals(c)) {
+						if((s.pos.equals(c)  || s.secPos.equals(c)) && !s.isSunken) {
 							s.isSunken = true;
 							if (p.playerDefeat() == true) {
 								view.infoScreen(p.getName(), curState);
@@ -305,6 +313,46 @@ public class GameController {
 		if (curShip == null) return null;
 		
 		return curShip.pos;
+	}
+
+	public boolean loadGame(){
+		Reader xmlReader = new Reader();
+	    
+	    try {
+	        SaveGame loadedGame = xmlReader.getSaveGame();
+	        
+	        this.players = loadedGame.players;
+	        this.curPlayer = players.get(loadedGame.curPlayerID);
+	        this.curState = loadedGame.curState;
+	        this.players = loadedGame.players;
+	        
+	        this.model.UpdatePlayers(this.players);
+	        
+	        for (Player p : this.players) {
+	            if (p.getID() == loadedGame.curPlayerID) {
+	                this.curPlayer = p;
+	                break;
+	            }
+	        }
+	        
+	        if (this.curState == State.PLACE_HARBOUR) {
+	            view.PlaceHarbour(curPlayer);
+	        } else {
+	            view.NextMove(curPlayer); 
+	        }
+	        
+	        view.revalidate();
+	        view.repaint();
+	        
+	        return true;
+
+	        
+	    } catch (IOException e) {
+	        view.problem("Speicherdatei konnte nicht gelesen werden oder fehlt!");
+	    } catch (SAXException | ParserConfigurationException e) {
+	        view.problem("Der Spielstand ist beschädigt (ungültiges XML)!");
+	    }
+		return false;
 	}
 	
 	

@@ -23,6 +23,12 @@ public class Player {
 		this.name = name;
 		this.colour = colour;
 	}
+	//Konstruktor fürs Laden von Spielständen
+	public Player(int id, String name, Color colour) {
+	    this.ID = id;          
+	    this.name = name;
+	    this.colour = colour;
+	}
 	
 	//Ausschieden handlen und falls Spieler "das erste Mal ausscheidet" true zurückgeben
 	public boolean playerDefeat() {

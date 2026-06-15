@@ -45,11 +45,11 @@ public class ControlBar extends JPanel {
 		add(actionPanel);
 		actionPanel.setLayout(new GridLayout(2, 0, 0, 0));
 		
-		btnAngriff = new JButton("Angriff");
+		btnAngriff = new JButton("Angreifen");
 		actionPanel.add(btnAngriff);
 		btnAngriff.addActionListener(e -> parent.getController().attackStart());
 		
-		btnBeenden = new JButton("Beenden");
+		btnBeenden = new JButton("Zug beenden");
 		actionPanel.add(btnBeenden);
 		btnBeenden.addActionListener(e -> {
 			if (parent.getController().getState() == State.PLACE_HARBOUR && isPlaced == false) {

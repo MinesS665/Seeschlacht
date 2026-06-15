@@ -11,7 +11,7 @@ public class Main {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			
-			GameMap map = new GameMap("/assets/Map.png");
+			GameMap map = new GameMap("/assets/Map4.png");
             
             GameModel model = new GameModel(map);
             MainWindow view = new MainWindow();
