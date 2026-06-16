@@ -11,12 +11,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import controller.State;
 import model.Coordinates;
 import model.Player;
 import model.Ship;
@@ -26,7 +24,6 @@ public class Reader {
 	private Document tree1;
 	private String map;
 	private ArrayList<Player> players = new ArrayList<>(); 
-	private State curState;
 	private int curPlayerID;
 	private SaveGame game;
 	
@@ -35,15 +32,19 @@ public class Reader {
 		factory.setIgnoringElementContentWhitespace(true);
 		
 		try {
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			// Lädt die Datei aus dem "saves"-Ordner
-			tree1 = builder.parse(new File("saves/savegame.xml"));
-			tree1.getDocumentElement().normalize();
+			File xmlFile = new File("saves/savegame.xml");
 			
-			System.out.println("Strukturbaum erfolgreich gebaut\n");
+			//Prüft, ob die Datei existiert und nicht leer ist
+			if (xmlFile.exists() && xmlFile.length() > 0) {
+				DocumentBuilder builder = factory.newDocumentBuilder();
+				tree1 = builder.parse(xmlFile);
+				tree1.getDocumentElement().normalize();
+			} else {
+				tree1 = null; //Verhindert spätere Abstürze beim Auslesen
+			}
 			
 		} catch(ParserConfigurationException | SAXException | IOException e) {
-			e.printStackTrace();
+
 		}
 	}
 	
@@ -61,10 +62,7 @@ public class Reader {
 			else if (node.getNodeName().equals("curPlayerId") || node.getNodeName().equals("curPlayer")) {
 				this.curPlayerID = Integer.parseInt(content);
 			} 
-			else if (node.getNodeName().equals("curState")) {
-				this.curState = State.valueOf(content.toUpperCase());
 
-			} 
 			else if (node.getNodeName().equals("player")) {
 				
 				//Knoten zu Element machen
@@ -73,24 +71,16 @@ public class Reader {
 				//Daten laden
 				int id = Integer.parseInt(playerElement.getAttribute("id"));
 				String name = playerElement.getElementsByTagName("name").item(0).getTextContent().trim();
-				int movedSteps = Integer.parseInt(playerElement.getElementsByTagName("movedSteps").item(0).getTextContent().trim());
 				int harbourX = Integer.parseInt(playerElement.getElementsByTagName("harbourX").item(0).getTextContent().trim());
 			    int harbourY = Integer.parseInt(playerElement.getElementsByTagName("harbourY").item(0).getTextContent().trim());
 			    
 			    //Farbe laden
-			    String hexColor = playerElement.getElementsByTagName("color").item(0).getTextContent().trim();
-			    Color playerColor;
-			    
-			    try {
-			        playerColor = Color.decode(hexColor);
-			    } catch (NumberFormatException e) {
-			        playerColor = Color.GRAY;
-			    }
+			    String strColor = playerElement.getElementsByTagName("color").item(0).getTextContent().trim();
+			    Color pColor = new Color(Integer.parseInt(strColor));
 				
 				//Spieler-Objekt erzeugen
-				Player player = new Player(id, name, playerColor);
-				player.movedSteps = movedSteps;
-				player.setPosHabour(new Coordinates(harbourX, harbourY));
+				Player player = new Player(id, name, pColor);
+				player.posHabour = new Coordinates(harbourX, harbourY);
 				
 				//Schiffe dieses Spielers auslesen
 				NodeList shipList = playerElement.getElementsByTagName("ship");
@@ -147,14 +137,9 @@ public class Reader {
 		//Parsen starten
 	    this.find(this.tree1.getDocumentElement());
 	        
-	    this.game = new SaveGame(this.map, this.players, this.curState, this.curPlayerID);
+	    this.game = new SaveGame(this.map, this.players, this.curPlayerID);
 	    return this.game;
 
 	}
 
-	@Override
-	public String toString() {
-		return "Reader [\n  map=" + map + ", \n  curState=" + curState + ", \n  curPlayerID=" + curPlayerID 
-				+ ", \n  geladene Spieler Anzahl=" + (players != null ? players.size() : 0) + "\n]";
-	}
 }

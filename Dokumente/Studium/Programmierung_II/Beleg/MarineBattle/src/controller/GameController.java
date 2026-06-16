@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 
+import DOM.Manipulator;
 import DOM.Reader;
 import DOM.SaveGame;
 import org.xml.sax.SAXException;
@@ -221,7 +222,7 @@ public class GameController {
 		}
 		
 		//Hafen setzten und Schiffe generieren
-		curPlayer.setPosHabour(new Coordinates(x,y));
+		curPlayer.posHabour = new Coordinates(x,y);
 		
 		curPlayer.ships[0] = new Ship(curPlayer, new Coordinates(x-4,y));
 		curPlayer.ships[1] = new Ship(curPlayer, new Coordinates(x-2,y));
@@ -274,6 +275,7 @@ public class GameController {
 		
 		if (deafPlayers >= players.size()-1) endGame();
 		
+		saveGame();
 		nextMove();
 	}
 	
@@ -291,6 +293,9 @@ public class GameController {
 	private void endGame() {
 		
 		curState = State.END;
+		
+		Manipulator man = new Manipulator();
+		man.clearSaveGame();
 		
 		view.infoScreen(curPlayer.getName(), curState);
 		System.exit(0);
@@ -315,6 +320,16 @@ public class GameController {
 		return curShip.pos;
 	}
 
+	public boolean saveGame() {
+		
+		SaveGame game = new SaveGame(null, players, curPlayer.getID());
+		Manipulator man = new Manipulator();
+		man.saveGame(game);
+		
+		
+		return true;
+	}
+	
 	public boolean loadGame(){
 		Reader xmlReader = new Reader();
 	    
@@ -322,8 +337,7 @@ public class GameController {
 	        SaveGame loadedGame = xmlReader.getSaveGame();
 	        
 	        this.players = loadedGame.players;
-	        this.curPlayer = players.get(loadedGame.curPlayerID);
-	        this.curState = loadedGame.curState;
+	        this.curPlayer = players.get(loadedGame.curPlayerID-1);
 	        this.players = loadedGame.players;
 	        
 	        this.model.UpdatePlayers(this.players);
@@ -335,18 +349,18 @@ public class GameController {
 	            }
 	        }
 	        
-	        if (this.curState == State.PLACE_HARBOUR) {
-	            view.PlaceHarbour(curPlayer);
-	        } else {
-	            view.NextMove(curPlayer); 
-	        }
+	        curState = State.SELECT;
+	        view.NextMove(curPlayer); 
+	        
 	        
 	        view.revalidate();
 	        view.repaint();
 	        
 	        return true;
 
-	        
+	    
+	    } catch (NullPointerException e) {
+	    	view.problem("Kein alter Spielstand vorhanden");
 	    } catch (IOException e) {
 	        view.problem("Speicherdatei konnte nicht gelesen werden oder fehlt!");
 	    } catch (SAXException | ParserConfigurationException e) {

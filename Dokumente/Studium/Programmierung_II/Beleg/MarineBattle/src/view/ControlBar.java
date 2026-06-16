@@ -52,6 +52,7 @@ public class ControlBar extends JPanel {
 		btnBeenden = new JButton("Zug beenden");
 		actionPanel.add(btnBeenden);
 		btnBeenden.addActionListener(e -> {
+			if (parent.getController().getState() != State.PLACE_HARBOUR) parent.getController().saveGame();
 			if (parent.getController().getState() == State.PLACE_HARBOUR && isPlaced == false) {
 				parent.problem("Klicke auf die Karte um einen Standort festzulegen");
 			}

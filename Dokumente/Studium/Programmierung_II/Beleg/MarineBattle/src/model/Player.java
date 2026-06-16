@@ -11,7 +11,7 @@ public class Player {
 
 	public int movedSteps;
 	public int aShips = 5;
-	private Coordinates posHabour;
+	public Coordinates posHabour;
 	public Ship[] ships = new Ship[aShips];
 	public boolean itsTurn;
 	private boolean isDefeated = false;
@@ -69,10 +69,6 @@ public class Player {
 
 	public int getID() {
 		return ID;
-	}
-
-	public void setPosHabour(Coordinates posHabour) {
-		this.posHabour = posHabour;
 	}
 
 	public void setSteps(int plus) {

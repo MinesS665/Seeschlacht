@@ -56,9 +56,8 @@ public class EnterPlayers extends JPanel{
 		}
 		
 		btnLoadGame.addActionListener(e -> {
-			boolean sucess = parent.getController().loadGame();
-			if (!sucess) parent.problem("Spielstand konnte nicht geladen werden");
-			else parent.LeavePlayerEditor();
+
+			if (parent.getController().loadGame()) parent.LeavePlayerEditor();
 			});
 		
 		//neue Spieler hinzufügen
