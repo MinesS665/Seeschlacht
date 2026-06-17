@@ -90,6 +90,10 @@ public class ControlBar extends JPanel {
 		
 		lblShipsDisplay.setText("   Verfügbare Schiffe: " + shipDisplay[0] + shipDisplay[1] + shipDisplay[2] + shipDisplay[3] + shipDisplay[4]);
 		
+		actionPanel.revalidate();
+	    actionPanel.repaint();
+	    this.revalidate();
+	    this.repaint();
 	}
 	
 	//Layout zu Beginn svereinfachen

@@ -104,7 +104,7 @@ public class AttackPanel extends JPanel implements MouseListener, MouseMotionLis
         }
         
         //Punkte übergeben
-        controller.attackFinished(cPoints);
+        controller.scanDamage(cPoints);
 
         //Liste leeren damit Linie nach dem Schuss verschwindet
         points.clear();

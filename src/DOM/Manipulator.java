@@ -99,7 +99,7 @@ public class Manipulator {
             
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); // Nutzt Tabs für den Einzug wie dein Original
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); //Nutzt Tabs für den Einzug
             
             transformer.transform(source, res);
 

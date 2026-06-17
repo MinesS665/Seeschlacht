@@ -3,13 +3,15 @@ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import DOM.Manipulator;
 import DOM.Reader;
 import DOM.SaveGame;
-import org.xml.sax.SAXException;
 import model.*;
 import view.MainWindow;
 
@@ -63,6 +65,7 @@ public class GameController {
 		curPlayer.movedSteps = 0;
 		curShip = null; //TODO: Exception
 		undoSelect();
+		view.repaint();
 
 		//Aktuellen Spieler festlegen
 		if (curPlayer.getID() == players.size()) {
@@ -156,6 +159,8 @@ public class GameController {
 		int moveRange = 2;
 		int tolerance = 2;
 		
+		Coordinates startPos = curShip.pos;
+		
 		//Richtungsvektor mit Länge 1 bestimmen
 		int dX = Integer.compare(click.getX(), curShip.pos.getX());
 		int dY = Integer.compare(click.getY(), curShip.pos.getY());
@@ -200,9 +205,27 @@ public class GameController {
 		    }
 		}
 		
-		//Schritte aktualisieren
-		curPlayer.setSteps(1);
-		view.getControlPanel().updateSteps(curPlayer);
+		if (!startPos.equals(curShip.pos)) {
+			//Schritte aktualisieren
+			curPlayer.setSteps(1);
+			view.getControlPanel().updateSteps(curPlayer);
+		}
+		
+		int[] offset = {0, 1, 0, -1};
+		
+		ArrayList<Coordinates> surrounding = new ArrayList<>();
+		
+		for (int x : offset) {
+			for (int y : offset) {
+				surrounding.add(new Coordinates(curShip.pos.getX() + x, curShip.pos.getY() + y));	
+				surrounding.add(new Coordinates(curShip.secPos.getX() + x, curShip.secPos.getY() + y));
+			}
+		}
+		
+		view.repaint();
+		
+		scanDamage(surrounding);
+		
 	}
 
 	//Startrunde koordinieren
@@ -237,6 +260,8 @@ public class GameController {
 	//Angriff einleiten
 	public void attackStart () {
 		
+		curState = State.ATTACK;
+		
 		if (curShip == null) {
 			view.problem("Wähle zuert dein Schiff");
 			return;
@@ -246,37 +271,69 @@ public class GameController {
 	}
 	
 	//Ergebnis des Angriffes auswerten
-	public void attackFinished(ArrayList<Coordinates> points) {
+	public void scanDamage(ArrayList<Coordinates> points) {
 		
-		view.AttackFinished();
+		
+		boolean hit = false;
 		
 		//Für jeden Punkt überprüfen, ob ein fremdes Shiff getroffen wurde
 		for(Coordinates c : points) {
 			for(Player p : players) {
 				if(p != curPlayer && p.isDefeated() == false) {
 					for(Ship s : p.ships) {
-						if((s.pos.equals(c)  || s.secPos.equals(c)) && !s.isSunken) {
+						if((s.pos.equals(c)  || s.secPos.equals(c))) {
 							s.isSunken = true;
-							if (p.playerDefeat() == true) {
-								view.infoScreen(p.getName(), curState);
+							
+							//Rammen eines Schiffes beim Fahren
+							if (curState == State.MOVE) {
+								curShip.isSunken = true;
+								view.infoScreen("Das schaffen nicht viele... IHR EIGENES SCHIFF ZU VERSENKEN. Halte besser mehr Abstand zu gegenerischen Shiffen");
+								hit = true;
+								
+								if (!s.isSunken) s.isSunken = true;
+								
+								endRequired(hit);
+								saveGame();
+								nextMove();
+								
+								return;
 							}
+							
+							//Angriff auf ein Schiff
+							if (curState == State.ATTACK && !s.isSunken) {
+		                        s.isSunken = true;
+		                        hit = true;
+		                        
+		                        if (p.playerDefeat() == true) {
+		                            view.infoScreen(p.getName(), curState);
+		                        }
+		                    }
 						}
 					}
 				}
 			}
 		}
 		
+		saveGame();
+		
+		
+		if (curState == State.ATTACK) {
+			endRequired(false);
+			view.AttackFinished();
+			nextMove();
+		}
+	}
+	
+	private void endRequired(boolean tie) {
 		//Verbleibende Spieler prüfen
 		int deafPlayers = 0;
-		
+				
 		for(Player p : players) {
 			if(p.isDefeated()) deafPlayers++;
 		}
-		
-		if (deafPlayers >= players.size()-1) endGame();
-		
-		saveGame();
-		nextMove();
+			
+		if (deafPlayers >= players.size()-1 && tie == true) endGame(tie);
+		else if (deafPlayers >= players.size()-1) endGame(tie);
 	}
 	
 	//Alle Schiffe abwählen
@@ -290,14 +347,17 @@ public class GameController {
 	}
 
 	//Spiel beenden
-	private void endGame() {
+	private void endGame(boolean tie) {
 		
 		curState = State.END;
 		
 		Manipulator man = new Manipulator();
 		man.clearSaveGame();
 		
-		view.infoScreen(curPlayer.getName(), curState);
+		if (tie) {
+			view.infoScreen("Ganz in Piratenmanier: Es gibt nur Verlierer");
+		} else view.infoScreen(curPlayer.getName(), curState);
+		
 		System.exit(0);
 	}
 

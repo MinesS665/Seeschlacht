@@ -32,6 +32,7 @@ public class Player {
 	
 	//Ausschieden handlen und falls Spieler "das erste Mal ausscheidet" true zurückgeben
 	public boolean playerDefeat() {
+
 		
 		int sunkenShips = 0;
 		
@@ -39,7 +40,7 @@ public class Player {
 			if (s.isSunken == true) sunkenShips++;
 		}
 		
-		if (sunkenShips == aShips && isDefeated == false) {
+		if (sunkenShips == aShips-1 && isDefeated == false) {
 			isDefeated = true;
 			return true;
 		} else {
