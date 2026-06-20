@@ -20,22 +20,31 @@ import model.Coordinates;
 import model.Player;
 import model.Ship;
 
+/**
+ * Liest einen gespeicherten Spielstand aus der XML-Datei und wandelt ihn in
+ * interne Objekte (Player, Ship, Coordinates) um.
+ */
 public class Reader {
-	
+    
 	private Document tree1;
 	private String map;
 	private ArrayList<Player> players = new ArrayList<>(); 
 	private int curPlayerId;
 	private SaveGame game;
 	private Exception parseException;
-	
+    
+	/**
+	 * Versucht, die Datei "saves/savegame.xml" zu parsen. Bei Fehlern wird
+	 * die Exception intern gehalten und später beim Aufruf von {@link #getSaveGame()}
+	 * wiedergeworfen.
+	 */
 	public Reader() {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setIgnoringElementContentWhitespace(true);
-		
+        
 		try {
 			File xmlFile = new File("saves/savegame.xml");
-			
+            
 			//Prüft, ob die Datei existiert und nicht leer ist
 			if (xmlFile.exists() && xmlFile.length() > 0) {
 				DocumentBuilder builder = factory.newDocumentBuilder();
@@ -44,12 +53,17 @@ public class Reader {
 			} else {
 				tree1 = null; //Verhindert spätere Abstürze beim Auslesen
 			}
-			
+            
 		} catch(ParserConfigurationException | SAXException | IOException e) {
 			parseException = e;
 		}
 	}
 	
+	/**
+	 * Rekursive Suche durch die DOM-Knoten, extrahiert bekannte Tags und füllt
+	 * interne Strukturen (map, players, curPlayerId).
+	 * @param node aktueller DOM-Knoten
+	 */
 	public void find(Node node) {
 		
 		//Filtern nach Tags
@@ -134,20 +148,29 @@ public class Reader {
 		}
 	}
 	
+	/**
+	 * Liefert ein {@link SaveGame}-Objekt, das aus der gespeicherten XML-Datei erzeugt wurde.
+	 * Falls beim Parsen zuvor ein Fehler aufgetreten ist, wird dieser hier wiedergeworfen.
+	 *
+	 * @return SaveGame-Instanz mit Map, Spielern und aktuellem Spieler
+	 * @throws SAXException bei XML-Parsing-Fehlern
+	 * @throws IOException bei IO-Fehlern
+	 * @throws ParserConfigurationException wenn der Parser nicht konfiguriert werden konnte
+	 */
 	public SaveGame getSaveGame() throws SAXException, IOException, ParserConfigurationException {
 
 		if (parseException instanceof SAXException) throw (SAXException) parseException;
 		if (parseException instanceof IOException) throw (IOException) parseException;
 		if (parseException instanceof ParserConfigurationException) throw (ParserConfigurationException) parseException;
 		if (this.tree1 == null) throw new FileNotFoundException("Kein Spielstand vorhanden");
-		
+        
 		players.clear();
-		
+        
 		//Parsen starten
-	    this.find(this.tree1.getDocumentElement());
-	        
-	    this.game = new SaveGame(this.map, this.players, this.curPlayerId);
-	    return this.game;
+		this.find(this.tree1.getDocumentElement());
+            
+		this.game = new SaveGame(this.map, this.players, this.curPlayerId);
+		return this.game;
 
 	}
 

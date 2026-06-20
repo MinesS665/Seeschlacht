@@ -16,8 +16,25 @@ import org.w3c.dom.Element;
 
 import model.Player;
 
+/**
+ * Hilfsklasse zum Speichern und Bereinigen von Spielständen als XML.
+ *
+ * <p>Verwendet DOM-APIs, um Spiele in eine Datei unter {@code saves/savegame.xml}
+ * zu schreiben oder die Datei zu leeren.
+ */
 public class Manipulator {
-	
+	/**
+	 * Default-Konstruktor. Dokumentiert, damit Javadoc keinen Hinweis auf
+	 * einen unkommentierten Standardkonstruktor ausgibt.
+	 */
+	public Manipulator() {}
+    
+	/**
+	 * Schreibt den gegebenen Spielstand als XML-Datei in das Verzeichnis "saves".
+	 *
+	 * @param game SaveGame-Objekt mit allen notwendigen Informationen
+	 * @return true, wenn das Speichern erfolgreich war
+	 */
 	public boolean saveGame(SaveGame game) {
 		
 		try {
@@ -119,6 +136,11 @@ public class Manipulator {
 		}
 	}
 		
+	/**
+	 * Validiert, ob das SaveGame-Objekt vollständig ist (Spieler, Hafen, Schiffe vorhanden).
+	 * @param game SaveGame-Instanz
+	 * @return true, wenn vollständig
+	 */
 	private boolean isSaveGameComplete(SaveGame game) {
 		if (game == null || game.players == null || game.players.isEmpty()) return false;
 		
@@ -133,6 +155,9 @@ public class Manipulator {
 		return true;
 	}
 	
+	/**
+	 * Löscht (leert) die gespeicherte Spielstand-Datei, falls vorhanden.
+	 */
 	public void clearSaveGame() {
 		
 	    File xmlFile = new File("saves/savegame.xml");

@@ -21,6 +21,10 @@ public class EnterPlayers extends JPanel {
 	private static PlayerRow[] players = new PlayerRow[maxPlayers];
 
 	//Objekte und Layout generieren
+	/**
+	 * Erzeugt das Panel zur Eingabe und Verwaltung der Spieler.
+	 * @param parent referenziertes Hauptfenster zur Kommunikation mit dem Controller
+	 */
 	public EnterPlayers(MainWindow parent) {
 		
 		EnterPlayers.parent = parent;
@@ -75,6 +79,10 @@ public class EnterPlayers extends JPanel {
 		
 	}
 	
+	/**
+	 * Liest die eingegebenen Spielerzeilen aus, validiert die Eingaben und übergibt
+	 * die finale Spielerliste an den Controller.
+	 */
 	public void submitPlayers() {
 
 		ArrayList<String> names = new ArrayList<>();
@@ -116,6 +124,10 @@ public class EnterPlayers extends JPanel {
 		
 	}
 	
+	/**
+	 * Aktualisiert das Layout des Panels, sodass genau die aktuell sichtbaren
+	 * PlayerRow-Elemente in der richtigen Reihenfolge angezeigt werden.
+	 */
 	public static void updateLayout() {
 		
 		//Alle Objekte entfernen und gewuenschte wiederherstellen um Reihenfolge beizubehalten
@@ -130,6 +142,13 @@ public class EnterPlayers extends JPanel {
 		mainPanel.repaint();
 	}
 	
+	/**
+	 * Entfernt die angegebene PlayerRow aus der sichtbaren Liste und verschiebt
+	 * die nachfolgenden Zeilen nach. Diese Methode ist statisch, da sie von den
+	 * PlayerRow-Instanzen (Remove-Button) aufgerufen wird.
+	 *
+	 * @param rowToRemove die Zeile, die entfernt werden soll
+	 */
 	public static void removePlayer(PlayerRow rowToRemove) {
 		
 		if (visiblePlayers <=2) {

@@ -6,19 +6,32 @@ import java.awt.FlowLayout;
 import javax.swing.*;
 
 
+/**
+ * UI-Komponente: Eine Zeile im Spieler-Editor mit Namen, Farbauswahl und Entfernen-Button.
+ */
 public class PlayerRow extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
+	/** Anzahl der angelegten PlayerRow-Instanzen (UI-zählend). */
 	public static int aPlayers = 0; 
 
+	/** Label mit Spieler-Nummer (z. B. "Spieler 1"). */
 	private JLabel lblSpieler ;
+	/** Textfeld zur Eingabe des Spielernamens. */
 	private JTextField txtEnterName;
+	/** ComboBox zur Farbauswahl des Spielers. */
 	private JComboBox<String> comboPickColor;
+	/** Button, um diese Zeile / den Spieler zu entfernen. */
 	private JButton btnRemovePlayer;
-	
+    
+	/** Interne Farbnamen, angezeigt in der ComboBox. */
 	String[] colors = {"Farbe wählen", "Rot", "Orange", "Gelb", "Grün", "Blau", "Lila", "Rosa", "Magenta", "Cyan", "Grau"};
 	
+	/**
+	 * Erstellt eine Zeile im Spieler-Editor mit Textfeld, Farbauswahl und Entfernen-Button.
+	 * @param index Anzeigeindex (1-basiert) für die Beschriftung
+	 */
 	public PlayerRow(int index) {
 		
 		aPlayers++;
@@ -43,14 +56,26 @@ public class PlayerRow extends JPanel {
 		this.repaint();
 	}
 
+	/**
+	 * Aktualisiert die Beschriftung der Zeile (Spieler N).
+	 * @param index neuer 0-basierter Index
+	 */
 	public void updateLabel(int index) {
-        this.lblSpieler.setText("Spieler " + (index + 1));
-    }
+		this.lblSpieler.setText("Spieler " + (index + 1));
+	}
 	
+	/**
+	 * Liefert den eingegebenen Spielernamen aus dem Textfeld.
+	 * @return eingegebener Name (leer möglich)
+	 */
 	public String getTxtEnterName() {
 		return txtEnterName.getText();
 	}
 
+	/**
+	 * Liefert die momentan ausgewählte Farbe als {@link Color}.
+	 * @return ausgewählte Farbe (Standard: Grau)
+	 */
 	public Color getComboPickColor() {
 		
 		String colorName = (String) comboPickColor.getSelectedItem();
@@ -70,6 +95,10 @@ public class PlayerRow extends JPanel {
 		};
 	}
 
+	/**
+	 * Liefert die internen Namen der auswählbaren Farben (für UI/Tests).
+	 * @return String-Array mit Farbnamen
+	 */
 	public String[] getColors() {
 		return colors;
 	}
