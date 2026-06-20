@@ -1,4 +1,4 @@
-package DOM;
+package dom;
 
 import java.util.ArrayList;
 
@@ -8,11 +8,11 @@ public class SaveGame {
 	
 	public String map;
 	public ArrayList<Player> players;
-	public int curPlayerID;
+	public int curPlayerId;
 	
-	public SaveGame (String map, ArrayList<Player> players, int curPlayerID) {
+	public SaveGame (String map, ArrayList<Player> players, int curPlayerId) {
 		this.map = map;
 		this.players = players;
-		this.curPlayerID = curPlayerID;
+		this.curPlayerId = curPlayerId;
 	}
 }

@@ -5,13 +5,13 @@ import java.awt.Color;
 public class Player {
 
 	private static int playerCount = 0;
-	private int ID;
+	private int id;
 	private String name;
 	private Color colour;
 
 	public int movedSteps;
 	public int aShips = 5;
-	public Coordinates posHabour;
+	public Coordinates posHarbour;
 	public Ship[] ships = new Ship[aShips];
 	public boolean itsTurn;
 	private boolean isDefeated = false;
@@ -19,15 +19,16 @@ public class Player {
 	//Konstruktor
 	public Player(String name, Color colour) {
 		playerCount++;
-		this.ID = playerCount;
+		this.id = playerCount;
 		this.name = name;
 		this.colour = colour;
 	}
 	//Konstruktor fürs Laden von Spielständen
 	public Player(int id, String name, Color colour) {
-	    this.ID = id;          
+	    this.id = id;          
 	    this.name = name;
 	    this.colour = colour;
+	    ensurePlayerCount(id);
 	}
 	
 	//Ausschieden handlen und falls Spieler "das erste Mal ausscheidet" true zurückgeben
@@ -36,16 +37,11 @@ public class Player {
 		int sunkenShips = 0;
 		
 		for(Ship s : ships) {
-			if (s.isSunken == true) sunkenShips++;
+			if (s != null && s.isSunken == true) sunkenShips++;
 			
 		}
 		
-		System.out.println(sunkenShips);
-		System.out.println(aShips-1);
-		System.out.println(isDefeated);
-		
 		if (sunkenShips == aShips && isDefeated == false) {
-			System.out.println("1");
 			isDefeated = true;
 			return true;
 		} else {
@@ -60,6 +56,10 @@ public class Player {
 	public static void setPlayerCount(int lowerBy) {
 		playerCount -= lowerBy;
 	}
+	
+	public static void ensurePlayerCount(int id) {
+		if (playerCount < id) playerCount = id;
+	}
 
 	public static int getPlayerCount() {
 		return playerCount;
@@ -73,8 +73,8 @@ public class Player {
 		return name;
 	}
 
-	public int getID() {
-		return ID;
+	public int getId() {
+		return id;
 	}
 
 	public void setSteps(int plus) {
@@ -83,7 +83,7 @@ public class Player {
 	
 	@Override
 	public String toString() {
-		return "Player [ID=" + ID + ", name=" + name + ", colour=" + colour + ", posHabour=" + posHabour + ", itsTurn="
+		return "Player [id=" + id + ", name=" + name + ", colour=" + colour + ", posHarbour=" + posHarbour + ", itsTurn="
 				+ itsTurn + "]";
 	}
 
@@ -92,6 +92,6 @@ public class Player {
 	    if (this == obj) return true;
 	    if (obj == null || getClass() != obj.getClass()) return false;
 	    Player other = (Player) obj;
-	    return this.ID == other.ID; // Spieler sind gleich, wenn ihre ID gleich ist
+	    return this.id == other.id; // Spieler sind gleich, wenn ihre id gleich ist
 	}
 }

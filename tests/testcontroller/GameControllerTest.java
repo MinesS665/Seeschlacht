@@ -1,10 +1,9 @@
-package testController;
+package testcontroller;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -102,18 +101,18 @@ public class GameControllerTest {
 	}
 	
 	@Test
-	public void handleMapClick_inPlaceHarbour() {
+	public void handleMapClickInPlaceHarbour() {
 		
 	    controller.setStateTesting(State.PLACE_HARBOUR);
 	    Coordinates waterPos = new Coordinates(40, 20);
 	    
-	    controller.handleMapCLick(waterPos);
+	    controller.handleMapClick(waterPos);
 
-	    assertNotNull(controller.getCurPlayer().posHabour);
+	    assertNotNull(controller.getCurPlayer().posHarbour);
 	}
 	
 	@Test
-	public void handleMapClick_selectShipSuccess() {
+	public void handleMapClickSelectShipSuccess() {
 	    controller.setStateTesting(State.SELECT);
 	    Player p1 = controller.getCurPlayer();
 	    
@@ -121,14 +120,14 @@ public class GameControllerTest {
 	    p1.ships[0] = new Ship(shipPos);
 	    p1.ships[0].isSunken = false;
 	    
-	    controller.handleMapCLick(shipPos);
+	    controller.handleMapClick(shipPos);
 	    
 	    assertTrue(p1.ships[0].isSelected);
 	    assertEquals(State.MOVE, controller.getState());
 	}
 	
 	@Test
-	public void handleMapClick_moveStepsExceeded() {
+	public void handleMapClickMoveStepsExceeded() {
 		
 	    controller.setStateTesting(State.MOVE);
 	    Player p1 = controller.getCurPlayer();
@@ -137,15 +136,14 @@ public class GameControllerTest {
 	    
 	    Ship testShip = new Ship(startPos);
 	    p1.movedSteps = controller.getMaxSteps();
-	    
 
-	    controller.handleMapCLick(endPos);
+	    controller.handleMapClick(endPos);
 
 	    assertEquals(startPos, testShip.pos);
 	}
 	
 	@Test
-	public void selectShip_successfulExactClick() {
+	public void selectShipSuccessfulExactClick() {
 	    
 	    controller.setStateTesting(State.SELECT);
 	    Player activePlayer = controller.getCurPlayer();
@@ -154,7 +152,7 @@ public class GameControllerTest {
 	    Ship expectedShip = new Ship(shipPosition);
 	    activePlayer.ships[0] = expectedShip;
 	    
-	    controller.handleMapCLick(shipPosition);
+	    controller.handleMapClick(shipPosition);
 	    
 	    assertEquals(expectedShip, controller.getCurShipTesting());
 	    assertTrue(expectedShip.isSelected);
@@ -162,7 +160,7 @@ public class GameControllerTest {
 	}
 
 	@Test
-	public void selectShip_ignoredIfSunken() {
+	public void selectShipIgnoredIfSunken() {
 	    
 	    controller.setStateTesting(State.SELECT);
 	    Player activePlayer = controller.getCurPlayer();
@@ -173,7 +171,7 @@ public class GameControllerTest {
 	    sunkenShip.isSunken = true;
 	    activePlayer.ships[0] = sunkenShip;
 	    
-	    controller.handleMapCLick(shipPosition);
+	    controller.handleMapClick(shipPosition);
 	    
 	    assertNull(controller.getCurShipTesting());
 	    assertFalse(sunkenShip.isSelected);
@@ -181,7 +179,7 @@ public class GameControllerTest {
 	}
 	
 	@Test
-	public void attackStart_withoutSelectedShip() {
+	public void attackStartWithoutSelectedShip() {
 
 		controller.setStateTesting(State.SELECT);
 		
@@ -191,7 +189,7 @@ public class GameControllerTest {
 	}
 
 	@Test
-	public void scanDamage_rammingOwnShipSinksIt() {
+	public void scanDamageRammingOwnShipSinksIt() {
 		
 		Player p1 = controller.getCurPlayer();
 		Player p2 = controller.players.get(1);
@@ -201,7 +199,7 @@ public class GameControllerTest {
 		
 		// Hafen-Koordinaten setzen, damit saveGame() nicht abstürzt
 		for (Player p : controller.players) {
-			p.posHabour = dummyHarbour;
+			p.posHarbour = dummyHarbour;
 		}
 		
 		// Alle 5 Schiffe für alle Spieler initialisieren, um NullPointer zu verhindern
@@ -229,14 +227,14 @@ public class GameControllerTest {
 	}
 
 	@Test
-	public void placeHarbour_notEnoughWaterSpace() {
+	public void placeHarbourNotEnoughWaterSpace() {
 
 		controller.setStateTesting(State.PLACE_HARBOUR);
 		
 		Coordinates edgePos = new Coordinates(10, 3);
 		
-		controller.handleMapCLick(edgePos);
+		controller.handleMapClick(edgePos);
 		
-		assertNull(controller.getCurPlayer().posHabour);
+		assertNull(controller.getCurPlayer().posHarbour);
 	}
 }

@@ -13,7 +13,7 @@ public class GameModel {
 	}
 	
 	//Spieler speichern
-	public void UpdatePlayers(ArrayList<Player> updatedPlayers) {
+	public void updatePlayers(ArrayList<Player> updatedPlayers) {
 		
 		int oldSize = players.size();
 		//prüfen, ob noch alle Spieler aktuell sind

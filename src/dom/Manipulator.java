@@ -1,4 +1,4 @@
-package DOM;
+package dom;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,32 +18,41 @@ import model.Player;
 
 public class Manipulator {
 	
-	public void saveGame(SaveGame game) {
+	public boolean saveGame(SaveGame game) {
 		
 		try {
 			File xmlFile = new File("saves/savegame.xml");
+			File saveFolder = xmlFile.getParentFile();
+			
+			if (saveFolder != null && !saveFolder.exists()) {
+				saveFolder.mkdirs();
+			}
+			
+			if (!isSaveGameComplete(game)) {
+				return false;
+			}
 			
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setIgnoringElementContentWhitespace(true);
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			
+		
 			Document tree = builder.newDocument();
 			Element rootElement = tree.createElement("game");
 			tree.appendChild(rootElement);
 			
 			//neue Spieldaten schreiben
 			Element map = tree.createElement("map");
-			map.setTextContent(game.map);
+			map.setTextContent(game.map == null ? "" : game.map);
 			rootElement.appendChild(map);
 			
 			Element curPlayer = tree.createElement("curPlayer");
-			curPlayer.setTextContent(String.valueOf(game.curPlayerID));
+			curPlayer.setTextContent(String.valueOf(game.curPlayerId));
 			rootElement.appendChild(curPlayer);
 			
 			for(Player p : game.players) {
 				
 				Element player = tree.createElement("player");
-				player.setAttribute("id", String.valueOf(p.getID()));
+				player.setAttribute("id", String.valueOf(p.getId()));
 				rootElement.appendChild(player);
 				
 				Element name = tree.createElement("name");
@@ -55,11 +64,11 @@ public class Manipulator {
 				player.appendChild(color);
 				
 				Element harbourX = tree.createElement("harbourX");
-				harbourX.setTextContent(String.valueOf(p.posHabour.getX()));
+				harbourX.setTextContent(String.valueOf(p.posHarbour.getX()));
 				player.appendChild(harbourX);
 				
 				Element harbourY = tree.createElement("harbourY");
-				harbourY.setTextContent(String.valueOf(p.posHabour.getY()));
+				harbourY.setTextContent(String.valueOf(p.posHarbour.getY()));
 				player.appendChild(harbourY);
 				
 				for (int i = 0; i<5; i++) {
@@ -103,10 +112,25 @@ public class Manipulator {
             
             transformer.transform(source, res);
 
-			
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
+	}
+		
+	private boolean isSaveGameComplete(SaveGame game) {
+		if (game == null || game.players == null || game.players.isEmpty()) return false;
+		
+		for (Player p : game.players) {
+			if (p == null || p.posHarbour == null || p.ships == null) return false;
+			
+			for (int i = 0; i < 5; i++) {
+				if (p.ships[i] == null || p.ships[i].pos == null || p.ships[i].secPos == null) return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	public void clearSaveGame() {
@@ -118,8 +142,9 @@ public class Manipulator {
 	        
 	        try {
 	        	//FileWriter ohne 'true' überschreibt Datei mit "Nichts"
-	        	FileWriter writer = new FileWriter(xmlFile);
-	            writer.close();
+	        	try (FileWriter writer = new FileWriter(xmlFile)) {
+	        		writer.write("");
+	        	}
 	        	
 	        } catch (IOException e) {
 	            System.out.println("Fehler beim Leeren der Datei: " + e.getMessage());
@@ -130,4 +155,3 @@ public class Manipulator {
 	    }
 	}
 }
-

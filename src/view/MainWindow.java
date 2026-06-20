@@ -10,7 +10,7 @@ import model.Player;
 
 import java.awt.BorderLayout;
 
-public class MainWindow extends JFrame{
+public class MainWindow extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private CardLayout cardLayout = new CardLayout();
@@ -39,19 +39,19 @@ public class MainWindow extends JFrame{
 		this.pack();
 		this.setLocationRelativeTo(null);
 		
-		EnterPlayerEditor();
+		enterPlayerEditor();
 	}
 	
-	public void LeavePlayerEditor() {
+	public void leavePlayerEditor() {
 		cardLayout.show(mainPanel, "GAME");
 	}
 	
-	public void EnterPlayerEditor() {
+	public void enterPlayerEditor() {
 		cardLayout.show(mainPanel, "P-MENU");
 	}
 
 	//Karten-Panel erstellen
-	public void CreateMap(GameMap map) {
+	public void createMap(GameMap map) {
 
 		//Karte besteht aus Map und Attack-Panel
 		mapPanel = new MapView(this, map);
@@ -80,9 +80,9 @@ public class MainWindow extends JFrame{
 	    this.setLocationRelativeTo(null);
 	}
 
-	public void PlaceHarbour(Player p) {
+	public void placeHarbour(Player p) {
 		
-		((ControlBar) controlPanel).PlaceHarbour(p);
+		((ControlBar) controlPanel).placeHarbour(p);
 	}
 
 	public GameController getController() {
@@ -93,9 +93,9 @@ public class MainWindow extends JFrame{
 		this.controller = controller;
 	}
 	
-	public void NextMove(Player p) {
+	public void nextMove(Player p) {
 		
-		((ControlBar) controlPanel).NextMove(p);
+		((ControlBar) controlPanel).nextMove(p);
 	}
 
 	public ControlBar getControlPanel() {
@@ -106,18 +106,18 @@ public class MainWindow extends JFrame{
 		JOptionPane.showMessageDialog(this, text);
 	}
 
-	public void Attack() {
+	public void attack() {
 		
 		attackPanel.setVisible(true);
-		((ControlBar) controlPanel).setFinishBtnVis(false);;
+		((ControlBar) controlPanel).setFinishBtnVis(false);
 		
 	}
 	
-	public void AttackFinished() {
+	public void attackFinished() {
 		
 		attackPanel.setVisible(false);
 		((ControlBar) controlPanel).setAttBtnVis(false);
-		((ControlBar) controlPanel).setFinishBtnVis(true);;
+		((ControlBar) controlPanel).setFinishBtnVis(true);
 
 	}
 

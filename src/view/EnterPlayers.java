@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import model.Player;
 
-public class EnterPlayers extends JPanel{
+public class EnterPlayers extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -57,7 +57,7 @@ public class EnterPlayers extends JPanel{
 		
 		btnLoadGame.addActionListener(e -> {
 
-			if (parent.getController().loadGame()) parent.LeavePlayerEditor();
+			if (parent.getController().loadGame()) parent.leavePlayerEditor();
 			});
 		
 		//neue Spieler hinzufügen
@@ -111,14 +111,14 @@ public class EnterPlayers extends JPanel{
 		
 		if (x == 0) {
 			parent.getController().savePlayers(finalPlayers);
-			parent.LeavePlayerEditor();
+			parent.leavePlayerEditor();
 		}
 		
 	}
 	
 	public static void updateLayout() {
 		
-		//Alle Objekte entfernen und gewünste wiederhserstellen um Reihenfolge beizubehalten
+		//Alle Objekte entfernen und gewuenschte wiederherstellen um Reihenfolge beizubehalten
 		mainPanel.removeAll();
 		for (int i = 0; i < maxPlayers; i++) {
 			mainPanel.add(players[i]);
@@ -133,7 +133,7 @@ public class EnterPlayers extends JPanel{
 	public static void removePlayer(PlayerRow rowToRemove) {
 		
 		if (visiblePlayers <=2) {
-			parent.problem("Es braucht mindestes 2 Spieler");
+			parent.problem("Es braucht mindestens 2 Spieler");
 			return;
 		}
 		

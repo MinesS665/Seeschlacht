@@ -1,4 +1,4 @@
-package testModel;
+package testmodel;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,16 +26,16 @@ class PlayerTest {
         assertEquals("Alice", p1.getName());
         assertEquals(Color.BLUE, p1.getColour());
         
-        // Testet, ob die ID automatisch hochgezählt wird
-        assertTrue(p2.getID() > p1.getID(), "Die ID des zweiten Spielers muss höher sein.");
+        // Testet, ob die id automatisch hochgezählt wird
+        assertTrue(p2.getId() > p1.getId(), "Die id des zweiten Spielers muss höher sein.");
     }
 
     @Test
     void testLoadConstructor() {
-        // Testet den Konstruktor für Spielstände (manuelle ID-Vergabe)
+        // Testet den Konstruktor für Spielstände (manuelle id-Vergabe)
         Player p = new Player(99, "Charlie", Color.GREEN);
         
-        assertEquals(99, p.getID());
+        assertEquals(99, p.getId());
         assertEquals("Charlie", p.getName());
     }
 
@@ -52,7 +52,7 @@ class PlayerTest {
     }
 
     @Test
-    void testPlayerDefeat_NotDefeatedInitially() {
+    void testPlayerDefeatNotDefeatedInitially() {
         Player p = new Player("Alice", Color.BLUE);
         
         // Schiffe initialisieren
@@ -66,7 +66,7 @@ class PlayerTest {
     }
 
     @Test
-    void testPlayerDefeat_TriggersExactlyOnce() {
+    void testPlayerDefeatTriggersExactlyOnce() {
         Player p = new Player("Alice", Color.BLUE);
         
         // Alle Schiffe als versenkt markieren

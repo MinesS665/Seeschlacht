@@ -1,4 +1,4 @@
-package testModel;
+package testmodel;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,7 +34,7 @@ class GameModelTest {
         ArrayList<Player> newPlayers = new ArrayList<>(Arrays.asList(p1, p2));
 
         // 2. Führe das Update aus
-        gameModel.UpdatePlayers(newPlayers);
+        gameModel.updatePlayers(newPlayers);
 
         // 3. Überprüfe, ob die Spieler hinzugefügt wurden
         assertEquals(2, gameModel.getPlayers().size(), "Es sollten 2 Spieler in der Liste sein.");
@@ -48,11 +48,11 @@ class GameModelTest {
         Player p2 = new Player("Bob", Color.RED);
         
         // Startzustand: Beide Spieler sind im Spiel
-        gameModel.UpdatePlayers(new ArrayList<>(Arrays.asList(p1, p2)));
+        gameModel.updatePlayers(new ArrayList<>(Arrays.asList(p1, p2)));
 
         // Update-Liste enthält jetzt nur noch Bob (Alice fliegt raus)
         ArrayList<Player> updatedPlayers = new ArrayList<>(Arrays.asList(p2));
-        gameModel.UpdatePlayers(updatedPlayers);
+        gameModel.updatePlayers(updatedPlayers);
 
         // Überprüfen
         assertEquals(1, gameModel.getPlayers().size(), "Es sollte nur noch 1 Spieler übrig sein.");
@@ -65,11 +65,11 @@ class GameModelTest {
         Player p1 = new Player("Alice", Color.BLUE);
         
         // Alice das erste Mal hinzufügen
-        gameModel.UpdatePlayers(new ArrayList<>(Arrays.asList(p1)));
+        gameModel.updatePlayers(new ArrayList<>(Arrays.asList(p1)));
         
         // Wir senden die Liste mit Alice erneut
         ArrayList<Player> updatedPlayers = new ArrayList<>(Arrays.asList(p1));
-        gameModel.UpdatePlayers(updatedPlayers);
+        gameModel.updatePlayers(updatedPlayers);
 
         // Überprüfen, dass sie nicht doppelt existiert
         assertEquals(1, gameModel.getPlayers().size(), "Spieler sollten nicht doppelt hinzugefügt werden.");
@@ -78,10 +78,10 @@ class GameModelTest {
     @Test
     void testUpdatePlayersWithEmptyList() {
         Player p1 = new Player("Alice", Color.BLUE);
-        gameModel.UpdatePlayers(new ArrayList<>(Arrays.asList(p1)));
+        gameModel.updatePlayers(new ArrayList<>(Arrays.asList(p1)));
 
         // Update mit einer komplett leeren Liste (simuliert: alle Spieler löschen)
-        gameModel.UpdatePlayers(new ArrayList<>());
+        gameModel.updatePlayers(new ArrayList<>());
 
         assertTrue(gameModel.getPlayers().isEmpty(), "Die Spielerliste sollte jetzt komplett leer sein.");
     }

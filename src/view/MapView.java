@@ -16,7 +16,7 @@ import model.TileTyp;
 import java.awt.Color;
 import java.awt.Dimension;
 
-public class MapView extends JPanel{
+public class MapView extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,7 @@ public class MapView extends JPanel{
         		int xPixel = e.getX() / tileSize;
         		int yPixel = e.getY() /tileSize;
         		
-        		parent.getController().handleMapCLick(new Coordinates(xPixel, yPixel));
+        		parent.getController().handleMapClick(new Coordinates(xPixel, yPixel));
         	}
         });
         
@@ -48,15 +48,15 @@ public class MapView extends JPanel{
 		Graphics2D g2d = (Graphics2D) g;
 		
 		//Map zeichnen
-        DrawMap(g2d);
+        drawMap(g2d);
                 
         //Schiffe zeichnen
-        DrawShips(g2d);   
+        drawShips(g2d);   
    
     }
 	
 	//Map erstellen
-	public void DrawMap(Graphics2D g2d) {
+	public void drawMap(Graphics2D g2d) {
 		
 		//Pixelweise Map zeichnen
 		for (int x = 0; x < map.getWidth(); x++) {
@@ -75,9 +75,9 @@ public class MapView extends JPanel{
 	}
 	
 	//Schiff über die Karte zeichnen
-	public void DrawShips(Graphics2D g2d) {
+	public void drawShips(Graphics2D g2d) {
 
-		ArrayList<model.Player> allPlayers = parent.getController().players;;
+		ArrayList<model.Player> allPlayers = parent.getController().players;
 			         
 		if (allPlayers == null) return;
 		

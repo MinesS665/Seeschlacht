@@ -9,9 +9,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-import DOM.Manipulator;
-import DOM.Reader;
-import DOM.SaveGame;
+import dom.Manipulator;
+import dom.Reader;
+import dom.SaveGame;
 import model.*;
 import view.MainWindow;
 
@@ -37,13 +37,13 @@ public class GameController {
 		this.map = map;
 		
 		view.setController(this);
-		view.CreateMap(map);
+		view.createMap(map);
 	}
 	
 	//Spieler speichern, Spiel starten
 	public void savePlayers(ArrayList<Player> players) {
 		
-		model.UpdatePlayers(players);
+		model.updatePlayers(players);
 		startGame();
 	}
 	
@@ -56,7 +56,7 @@ public class GameController {
 		//Ersten Spieler auswählen
 		curPlayer = players.get(0);
 		
-		view.PlaceHarbour(curPlayer);
+		view.placeHarbour(curPlayer);
 	}
 	
 	//Neuen Zug beginnen
@@ -66,34 +66,33 @@ public class GameController {
 		curShip = null;
 		undoSelect();
 		view.repaint();
-
-		//Aktuellen Spieler festlegen
-		if (curPlayer.getID() == players.size()) {
+		
+		if (endRequired(false)) return;
+		
+		int currentPlayerIndex = players.indexOf(curPlayer);
+		boolean harbourRoundFinished = curState == State.PLACE_HARBOUR && currentPlayerIndex == players.size() - 1;
+		
+		//Aktuellen Spieler festlegen und besiegte Spieler überspringen
+		int nextPlayerIndex = currentPlayerIndex;
+		
+		for (int i = 0; i < players.size(); i++) {
+			nextPlayerIndex = (nextPlayerIndex + 1) % players.size();
+			curPlayer = players.get(nextPlayerIndex);
 			
-			curState  = State.SELECT;
-			curPlayer = players.get(0);
-			
-		} else {
-			
-			curPlayer = players.get(curPlayer.getID());
-			
-			if (curState != State.PLACE_HARBOUR) {
-				curState = State.SELECT;
-			}
+			if (!curPlayer.isDefeated()) break;
 		}
 		
-		//Wenn Spieler bereits besiegt ist diesen überspringen
-		if (curPlayer.isDefeated() == true) {
-			nextMove();
+		if (harbourRoundFinished || curState != State.PLACE_HARBOUR) {
+			curState = State.SELECT;
 		}
 		
 		//Hafen platzieren? Enstsprechnde Anzeige aufrufen
-		if (curState == State.PLACE_HARBOUR) view.PlaceHarbour(curPlayer);
-		else view.NextMove(curPlayer);
+		if (curState == State.PLACE_HARBOUR) view.placeHarbour(curPlayer);
+		else view.nextMove(curPlayer);
 	}
 
 	//Auf Klicks reagieren
-	public void handleMapCLick(Coordinates clickPos) {
+	public void handleMapClick(Coordinates clickPos) {
 		
 		//Land blockieren
 		if(model.getMap().getTile(clickPos) != TileTyp.WATER && curState != State.MOVE) {
@@ -152,7 +151,7 @@ public class GameController {
 		return curShip;
 	}
 
-	//Bewegung des Shiffes steuern
+	//Bewegung des Schiffes steuern
 	private void moveShip(Coordinates click, Ship curShip) {
 		
 		int moveRange = 2;
@@ -170,7 +169,7 @@ public class GameController {
 		int diffX = Math.abs(click.getX() - curShip.pos.getX());
 		int diffY = Math.abs(click.getY() - curShip.pos.getY());
 
-		//Gerade Bewegung erzeingen wenn Klick fast gerade aus war
+		//Gerade Bewegung erzwingen wenn Klick fast gerade aus war
 		if (diffY <= tolerance && diffX > tolerance) {
 	        dY = 0;
 	    } else if (diffX <= tolerance && diffY > tolerance) {
@@ -233,7 +232,7 @@ public class GameController {
 		int x = c.getX();
 		int y = c.getY();
 		
-		//prüfen, ob im Umkreis genaug Wasser ist 
+		//prüfen, ob im Umkreis genug Wasser ist 
 		for (int i = -5; i<=5; i++) {
 			for (int j = -2; j<=2; j++) {
 				if(model.getMap().getTile(x+i,y+j) != TileTyp.WATER) {
@@ -244,7 +243,7 @@ public class GameController {
 		}
 		
 		//Hafen setzten und Schiffe generieren
-		curPlayer.posHabour = new Coordinates(x,y);
+		curPlayer.posHarbour = new Coordinates(x,y);
 		
 		curPlayer.ships[0] = new Ship(new Coordinates(x-4,y));
 		curPlayer.ships[1] = new Ship(new Coordinates(x-2,y));
@@ -262,52 +261,50 @@ public class GameController {
 		curState = State.ATTACK;
 		
 		if (curShip == null) {
-			view.problem("Wähle zuert dein Schiff");
+			view.problem("Wähle zuerst dein Schiff");
 			curState = State.SELECT;
 			return;
-		} else view.Attack();
+		} else view.attack();
 	}
 	
 	//Ergebnis des Angriffes auswerten
 	public void scanDamage(ArrayList<Coordinates> points) {
 		
-		
 		boolean hit = false;
+		boolean playerDefeated = false;
 		
-		//Für jeden Punkt überprüfen, ob ein fremdes Shiff getroffen wurde
+		//Für jeden Punkt überprüfen, ob ein fremdes Schiff getroffen wurde
 		for(Coordinates c : points) {
 			for(Player p : players) {
 				if(p != curPlayer && p.isDefeated() == false) {
 					for(Ship s : p.ships) {
-						if((s.pos.equals(c)  || s.secPos.equals(c))) {
+						if(s != null && !s.isSunken && (s.pos.equals(c)  || s.secPos.equals(c))) {
 							s.isSunken = true;
+							hit = true;
 							
 							//Rammen eines Schiffes beim Fahren
 							if (curState == State.MOVE) {
 								curShip.isSunken = true;
-								view.infoScreen("Das schaffen nicht viele... IHR EIGENES SCHIFF ZU VERSENKEN. Halte besser mehr Abstand zu gegenerischen Shiffen");
-								hit = true;
-								
-								if (!s.isSunken) s.isSunken = true;
+								view.infoScreen("Das schaffen nicht viele... IHR EIGENES SCHIFF ZU VERSENKEN. Halte besser mehr Abstand zu gegenerischen Schiffen");
 								
 								curPlayer.playerDefeat();
-								endRequired(hit);
+								p.playerDefeat();
 								saveGame();
-								nextMove();
+								
+								if (!endRequired(true)) {
+									nextMove();
+								}
 								
 								return;
 							}
 							
 							//Angriff auf ein Schiff
 							if (curState == State.ATTACK) {
-								if (!s.isSunken) {
-			                        s.isSunken = true;
-			                        hit = true;
-			                    }
+								
 								if (p.playerDefeat() == true) {
 		                            view.infoScreen(p.getName(), curState);
+		                            playerDefeated = true;
 		                        }
-								nextMove();
 		                      
 		                    }
 						}
@@ -320,23 +317,37 @@ public class GameController {
 		
 		
 		if (curState == State.ATTACK) {
-			endRequired(false);
-			view.AttackFinished();
-			nextMove();
+			
+			if (!endRequired(false)) {
+				view.attackFinished();
+				nextMove();
+			}
 		}
 	}
 	
-	private void endRequired(boolean tie) {
+	private boolean endRequired(boolean tie) {
 		//Verbleibende Spieler prüfen
-		int deafPlayers = 0;
+		int activePlayers = 0;
+		Player winner = null;
 				
 		for(Player p : players) {
-			if(p.isDefeated()) deafPlayers++;
+			if(!p.isDefeated()) {
+				activePlayers++;
+				winner = p;
+			}
 		}
-			
-		if (deafPlayers >= players.size()-1 && tie == true) endGame(tie);
-		else if (deafPlayers >= players.size()-1) endGame(!tie);
-		else nextMove();
+		
+		if (activePlayers == 0) {
+			endGame(true);
+			return true;
+		}
+		else if (activePlayers == 1) {
+			curPlayer = winner;
+			endGame(false);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	//Alle Schiffe abwählen
@@ -385,12 +396,9 @@ public class GameController {
 
 	public boolean saveGame() {
 		
-		SaveGame game = new SaveGame(null, players, curPlayer.getID());
+		SaveGame game = new SaveGame(null, players, curPlayer.getId());
 		Manipulator man = new Manipulator();
-		man.saveGame(game);
-		
-		
-		return true;
+		return man.saveGame(game);
 	}
 	
 	public boolean loadGame(){
@@ -400,20 +408,23 @@ public class GameController {
 	        SaveGame loadedGame = xmlReader.getSaveGame();
 	        
 	        this.players = loadedGame.players;
-	        this.curPlayer = players.get(loadedGame.curPlayerID-1);
-	        this.players = loadedGame.players;
-	        
-	        this.model.UpdatePlayers(this.players);
+	        this.model.updatePlayers(this.players);
+	        this.curPlayer = null;
 	        
 	        for (Player p : this.players) {
-	            if (p.getID() == loadedGame.curPlayerID) {
+	            if (p.getId() == loadedGame.curPlayerId) {
 	                this.curPlayer = p;
 	                break;
 	            }
 	        }
 	        
+	        if (this.curPlayer == null) {
+	        	view.problem("Der gespeicherte aktuelle Spieler wurde nicht gefunden.");
+	        	return false;
+	        }
+	        
 	        curState = State.SELECT;
-	        view.NextMove(curPlayer); 
+	        view.nextMove(curPlayer); 
 	        
 	        
 	        view.revalidate();

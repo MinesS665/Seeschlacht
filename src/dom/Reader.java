@@ -1,7 +1,8 @@
-package DOM;
+package dom;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -24,8 +25,9 @@ public class Reader {
 	private Document tree1;
 	private String map;
 	private ArrayList<Player> players = new ArrayList<>(); 
-	private int curPlayerID;
+	private int curPlayerId;
 	private SaveGame game;
+	private Exception parseException;
 	
 	public Reader() {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -44,7 +46,7 @@ public class Reader {
 			}
 			
 		} catch(ParserConfigurationException | SAXException | IOException e) {
-
+			parseException = e;
 		}
 	}
 	
@@ -60,7 +62,7 @@ public class Reader {
 				this.map = content;
 			} 
 			else if (node.getNodeName().equals("curPlayerId") || node.getNodeName().equals("curPlayer")) {
-				this.curPlayerID = Integer.parseInt(content);
+				this.curPlayerId = Integer.parseInt(content);
 			} 
 
 			else if (node.getNodeName().equals("player")) {
@@ -80,7 +82,7 @@ public class Reader {
 				
 				//Spieler-Objekt erzeugen
 				Player player = new Player(id, name, pColor);
-				player.posHabour = new Coordinates(harbourX, harbourY);
+				player.posHarbour = new Coordinates(harbourX, harbourY);
 				
 				//Schiffe dieses Spielers auslesen
 				NodeList shipList = playerElement.getElementsByTagName("ship");
@@ -120,7 +122,7 @@ public class Reader {
 			}
 		}
 		
-		//Rekursiver Kinder durachlaufen exkl. player
+		//Rekursiver Kinder durchlaufen exkl. player
 		if (node.hasChildNodes() && !node.getNodeName().equals("player")) {
 			
 			NodeList childs = node.getChildNodes();
@@ -134,10 +136,17 @@ public class Reader {
 	
 	public SaveGame getSaveGame() throws SAXException, IOException, ParserConfigurationException {
 
+		if (parseException instanceof SAXException) throw (SAXException) parseException;
+		if (parseException instanceof IOException) throw (IOException) parseException;
+		if (parseException instanceof ParserConfigurationException) throw (ParserConfigurationException) parseException;
+		if (this.tree1 == null) throw new FileNotFoundException("Kein Spielstand vorhanden");
+		
+		players.clear();
+		
 		//Parsen starten
 	    this.find(this.tree1.getDocumentElement());
 	        
-	    this.game = new SaveGame(this.map, this.players, this.curPlayerID);
+	    this.game = new SaveGame(this.map, this.players, this.curPlayerId);
 	    return this.game;
 
 	}

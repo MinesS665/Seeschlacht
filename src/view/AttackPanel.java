@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import controller.GameController;
 import model.Coordinates;
@@ -75,12 +76,12 @@ public class AttackPanel extends JPanel implements MouseListener, MouseMotionLis
         	}
         	
         	if(!clickPos.isClose(controller.getCurShipPos())) {
-        		JOptionPane.showMessageDialog(this, "Klicke auf dein aktuelles Shiff um den Angriff zu starten");
+        		JOptionPane.showMessageDialog(this, "Klicke auf dein aktuelles Schiff um den Angriff zu starten");
         		return;
         	}
         	
             points.clear();
-            points.add(e.getPoint());;
+            points.add(e.getPoint());
             isShooting = true;
             repaint();
         }
@@ -88,28 +89,28 @@ public class AttackPanel extends JPanel implements MouseListener, MouseMotionLis
 	
 	//Schuss anzeigen und gesammelte Punkte an Controller übergeben
 	private void fireShot() {
-        isShooting = false;
-        
-        //pausieren umm Schuss anzuzeigen
-        try {
-            Thread.sleep(1500); // Pausiert für 1 Sekunde
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Status wiederherstellen
-        }
-        
-        //Casting
-        ArrayList<Coordinates> cPoints = fillGaps(points);     
-        for(Point p : points) {
-        	cPoints.add(Coordinates.toCoordinates(p, mapView.getTileSize()));
-        }
+	    isShooting = false;
+	    repaint();
+	    
+	    Timer timer = new Timer(1500, e -> finishShot());
+	    timer.setRepeats(false);
+	    timer.start();
+	}
+	
+	private void finishShot() {
+	    //Casting
+	    ArrayList<Coordinates> cPoints = fillGaps(points);     
+	    for(Point p : points) {
+	    	cPoints.add(Coordinates.toCoordinates(p, mapView.getTileSize()));
+	    }
         
         //Punkte übergeben
         controller.scanDamage(cPoints);
 
         //Liste leeren damit Linie nach dem Schuss verschwindet
-        points.clear();
-        repaint();
-    }
+	    points.clear();
+	    repaint();
+	}
 	
 	@Override
 	//Punkte verbinden

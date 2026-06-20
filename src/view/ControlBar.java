@@ -35,7 +35,7 @@ public class ControlBar extends JPanel {
 		lblShipsDisplay = new JLabel("Flotte: OOOOO");
 		add(lblShipsDisplay);
 		
-		lblSteps = new JLabel("Augeführte Züge: 0/10");
+		lblSteps = new JLabel("Ausgefuehrte Züge: 0/10");
 		add(lblSteps);
 		
 		lblPlayerName = new JLabel("");
@@ -64,7 +64,7 @@ public class ControlBar extends JPanel {
 	}
 	
 	//Schaltfläche für nächsten Spieler anpassen
-	public void NextMove(Player player) {
+	public void nextMove(Player player) {
 		
 		colour = player.getColour();
 		isPlaced = false;
@@ -97,10 +97,10 @@ public class ControlBar extends JPanel {
 	    this.repaint();
 	}
 	
-	//Layout zu Beginn svereinfachen
-	public void PlaceHarbour(Player player) {
+	//Layout zu Beginn vereinfachen
+	public void placeHarbour(Player player) {
 		
-		NextMove(player);
+		nextMove(player);
 		
 		lblShipsDisplay.setText("Von wo aus soll deine Flotte operieren?");
 		lblSteps.setVisible(false);
