@@ -33,14 +33,19 @@ public class Player {
 	//Ausschieden handlen und falls Spieler "das erste Mal ausscheidet" true zurückgeben
 	public boolean playerDefeat() {
 
-		
 		int sunkenShips = 0;
 		
 		for(Ship s : ships) {
 			if (s.isSunken == true) sunkenShips++;
+			
 		}
 		
-		if (sunkenShips == aShips-1 && isDefeated == false) {
+		System.out.println(sunkenShips);
+		System.out.println(aShips-1);
+		System.out.println(isDefeated);
+		
+		if (sunkenShips == aShips && isDefeated == false) {
+			System.out.println("1");
 			isDefeated = true;
 			return true;
 		} else {
@@ -53,7 +58,7 @@ public class Player {
 	}
 	
 	public static void setPlayerCount(int lowerBy) {
-		playerCount =- lowerBy;
+		playerCount -= lowerBy;
 	}
 
 	public static int getPlayerCount() {
@@ -82,4 +87,11 @@ public class Player {
 				+ itsTurn + "]";
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+	    if (this == obj) return true;
+	    if (obj == null || getClass() != obj.getClass()) return false;
+	    Player other = (Player) obj;
+	    return this.ID == other.ID; // Spieler sind gleich, wenn ihre ID gleich ist
+	}
 }

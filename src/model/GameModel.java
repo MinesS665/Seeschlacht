@@ -15,11 +15,10 @@ public class GameModel {
 	//Spieler speichern
 	public void UpdatePlayers(ArrayList<Player> updatedPlayers) {
 		
+		int oldSize = players.size();
 		//prüfen, ob noch alle Spieler aktuell sind
-		for (Player p : players) {
-			if (!updatedPlayers.contains(p)) players.remove(p);
-			Player.setPlayerCount(-1);
-		}
+		players.removeIf(p -> !updatedPlayers.contains(p));
+		Player.setPlayerCount(oldSize -players.size());
 		
 		//neue Spieler hinzufügen
 		for (Player p : updatedPlayers) {

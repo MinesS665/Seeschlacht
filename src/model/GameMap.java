@@ -15,6 +15,12 @@ public class GameMap {
 	//Konstruktor
 	public GameMap(String imagePath) {
 		try {
+			
+			if (getClass().getResource(imagePath) == null) {
+	            System.err.println("Map konnte nicht geladen werden! Pfad falsch: " + imagePath);
+	            return;
+	        }
+			
 			//Lade PNG aus dem Assets-Ordner
 			BufferedImage mapImg = ImageIO.read(getClass().getResource(imagePath));
 			this.width = mapImg.getWidth();

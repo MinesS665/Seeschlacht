@@ -63,7 +63,7 @@ public class GameController {
 	public void nextMove() {
 		
 		curPlayer.movedSteps = 0;
-		curShip = null; //TODO: Exception
+		curShip = null;
 		undoSelect();
 		view.repaint();
 
@@ -128,7 +128,6 @@ public class GameController {
 	//Schiff auswählen
 	private Ship selectShip(Coordinates click) {
 
-		//TODO Exception bauen
 		int shipIndex = -1;
 		
 		//Nach Schiff in der Nähe suchen
@@ -247,11 +246,11 @@ public class GameController {
 		//Hafen setzten und Schiffe generieren
 		curPlayer.posHabour = new Coordinates(x,y);
 		
-		curPlayer.ships[0] = new Ship(curPlayer, new Coordinates(x-4,y));
-		curPlayer.ships[1] = new Ship(curPlayer, new Coordinates(x-2,y));
-		curPlayer.ships[2] = new Ship(curPlayer, new Coordinates(x,y));
-		curPlayer.ships[3] = new Ship(curPlayer, new Coordinates(x+2,y));
-		curPlayer.ships[4] = new Ship(curPlayer, new Coordinates(x+4,y));
+		curPlayer.ships[0] = new Ship(new Coordinates(x-4,y));
+		curPlayer.ships[1] = new Ship(new Coordinates(x-2,y));
+		curPlayer.ships[2] = new Ship(new Coordinates(x,y));
+		curPlayer.ships[3] = new Ship(new Coordinates(x+2,y));
+		curPlayer.ships[4] = new Ship(new Coordinates(x+4,y));
 		
 		view.repaint();
 		view.getControlPanel().setPlaced(true);
@@ -264,10 +263,9 @@ public class GameController {
 		
 		if (curShip == null) {
 			view.problem("Wähle zuert dein Schiff");
+			curState = State.SELECT;
 			return;
-		}
-
-		view.Attack();
+		} else view.Attack();
 	}
 	
 	//Ergebnis des Angriffes auswerten
@@ -292,6 +290,7 @@ public class GameController {
 								
 								if (!s.isSunken) s.isSunken = true;
 								
+								curPlayer.playerDefeat();
 								endRequired(hit);
 								saveGame();
 								nextMove();
@@ -300,13 +299,16 @@ public class GameController {
 							}
 							
 							//Angriff auf ein Schiff
-							if (curState == State.ATTACK && !s.isSunken) {
-		                        s.isSunken = true;
-		                        hit = true;
-		                        
-		                        if (p.playerDefeat() == true) {
+							if (curState == State.ATTACK) {
+								if (!s.isSunken) {
+			                        s.isSunken = true;
+			                        hit = true;
+			                    }
+								if (p.playerDefeat() == true) {
 		                            view.infoScreen(p.getName(), curState);
 		                        }
+								nextMove();
+		                      
 		                    }
 						}
 					}
@@ -333,7 +335,8 @@ public class GameController {
 		}
 			
 		if (deafPlayers >= players.size()-1 && tie == true) endGame(tie);
-		else if (deafPlayers >= players.size()-1) endGame(tie);
+		else if (deafPlayers >= players.size()-1) endGame(!tie);
+		else nextMove();
 	}
 	
 	//Alle Schiffe abwählen
@@ -429,5 +432,8 @@ public class GameController {
 		return false;
 	}
 	
-	
+	public void setStateTesting(State state) { this.curState = state;}
+	public void setCurPlayerTesting(Player p) { this.curPlayer = p;}
+	public Ship getCurShipTesting() {return curShip;}
+	public void setCurShipTesting(Ship s) { this.curShip = s;}
 }

@@ -70,6 +70,7 @@ public class ControlBar extends JPanel {
 		isPlaced = false;
 		
 		btnAngriff.setVisible(true);
+		btnBeenden.setVisible(true);
 		this.setBackground(colour);
 		btnBeenden.setBackground(colour);
 		btnAngriff.setBackground(colour);

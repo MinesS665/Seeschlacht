@@ -107,7 +107,7 @@ public class Reader {
 				    Coordinates pos1 = new Coordinates(x1, y1);
 				    Coordinates pos2 = new Coordinates(x2, y2);
 				    
-				    Ship ship = new Ship(player, pos1, pos2);
+				    Ship ship = new Ship(pos1, pos2);
 				    ship.isSunken = isSunken;
 				    
 				    //Schiff ins Array des Spielers legen

@@ -6,18 +6,16 @@ public class Ship {
 	public Coordinates secPos;
 	public boolean isSelected;
 	public boolean isSunken = false;
-	private Player captain;
 
-	public Ship (Player captain, Coordinates pos) {
-		this.captain = captain;
+	public Ship (Coordinates pos) {
+
 		this.pos = pos;
 		secPos = pos.addValue(0, 1);
 		isSelected = false;
 	}
 	
 	//Überladener Konstruktor
-	public Ship (Player captain, Coordinates pos, Coordinates secPos) {
-		this.captain = captain;
+	public Ship (Coordinates pos, Coordinates secPos) {
 		this.pos = pos;
 		this.secPos = secPos;
 		isSelected = false;
@@ -28,8 +26,7 @@ public class Ship {
 
 	@Override
 	public String toString() {
-		return "Ship [pos=" + pos + ", isSelected=" + isSelected + ", isSunken=" + isSunken + ", captain=" + captain
-				+ "]";
+		return "Ship [pos=" + pos + ", isSelected=" + isSelected + ", isSunken=" + isSunken + "]";
 	}
 	
 }
