@@ -26,6 +26,7 @@ Ein rundenbasiertes Strategiespiel für bis zu 10 Spieler, entwickelt in Java (S
 * `test/` – JUnit-Testklassen für automatisierte Black-Box- und Integrationstests.
 
 ## Installation & Start
+https://github.com/MinesS665/Seeschlacht.git
 
 1. Repository klonen oder als ZIP herunterladen und entpacken.
 2. Öffnen Sie das Projekt in Ihrer IDE (z.B. Eclipse).
@@ -35,3 +36,4 @@ Ein rundenbasiertes Strategiespiel für bis zu 10 Spieler, entwickelt in Java (S
 ## Tests ausführen
 
 Rechtklick auf den Ordner `test` (oder eine spezifische Testklasse wie `GameController_Test.java`) -> **Run As** -> **JUnit Test**.
+
