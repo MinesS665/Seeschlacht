@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<game>
+    <map/>
+    <curPlayer>1</curPlayer>
+    <player id="1">
+        <name>Spieler 1</name>
+        <color>-3652026</color>
+        <harbourX>50</harbourX>
+        <harbourY>30</harbourY>
+        <ship num="1">
+            <posX>20</posX>
+            <posY>30</posY>
+            <secPosX>20</secPosX>
+            <secPosY>21</secPosY>
+            <isSunken>true</isSunken>
+        </ship>
+        <ship num="2">
+            <posX>20</posX>
+            <posY>20</posY>
+            <secPosX>20</secPosX>
+            <secPosY>21</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+        <ship num="3">
+            <posX>20</posX>
+            <posY>20</posY>
+            <secPosX>20</secPosX>
+            <secPosY>21</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+        <ship num="4">
+            <posX>20</posX>
+            <posY>20</posY>
+            <secPosX>20</secPosX>
+            <secPosY>21</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+        <ship num="5">
+            <posX>20</posX>
+            <posY>20</posY>
+            <secPosX>20</secPosX>
+            <secPosY>21</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+    </player>
+    <player id="2">
+        <name>Spieler 2</name>
+        <color>-3636666</color>
+        <harbourX>50</harbourX>
+        <harbourY>30</harbourY>
+        <ship num="1">
+            <posX>20</posX>
+            <posY>30</posY>
+            <secPosX>99</secPosX>
+            <secPosY>100</secPosY>
+            <isSunken>true</isSunken>
+        </ship>
+        <ship num="2">
+            <posX>99</posX>
+            <posY>99</posY>
+            <secPosX>99</secPosX>
+            <secPosY>100</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+        <ship num="3">
+            <posX>99</posX>
+            <posY>99</posY>
+            <secPosX>99</secPosX>
+            <secPosY>100</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+        <ship num="4">
+            <posX>99</posX>
+            <posY>99</posY>
+            <secPosX>99</secPosX>
+            <secPosY>100</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+        <ship num="5">
+            <posX>99</posX>
+            <posY>99</posY>
+            <secPosX>99</secPosX>
+            <secPosY>100</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+    </player>
+    <player id="3">
+        <name>Spieler 3</name>
+        <color>-2960866</color>
+        <harbourX>50</harbourX>
+        <harbourY>30</harbourY>
+        <ship num="1">
+            <posX>50</posX>
+            <posY>50</posY>
+            <secPosX>50</secPosX>
+            <secPosY>51</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+        <ship num="2">
+            <posX>50</posX>
+            <posY>50</posY>
+            <secPosX>50</secPosX>
+            <secPosY>51</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+        <ship num="3">
+            <posX>50</posX>
+            <posY>50</posY>
+            <secPosX>50</secPosX>
+            <secPosY>51</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+        <ship num="4">
+            <posX>50</posX>
+            <posY>50</posY>
+            <secPosX>50</secPosX>
+            <secPosY>51</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+        <ship num="5">
+            <posX>50</posX>
+            <posY>50</posY>
+            <secPosX>50</secPosX>
+            <secPosY>51</secPosY>
+            <isSunken>false</isSunken>
+        </ship>
+    </player>
+</game>

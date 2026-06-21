@@ -1,0 +1,37 @@
+# Marine Battle
+
+Ein rundenbasiertes Strategiespiel für bis zu 10 Spieler, entwickelt in Java (Swing). Die Spieler platzieren ihre Flotten, bewegen ihre Schiffe über eine Seekarte und versuchen, die gegnerischen Schiffe durch strategische Angriffe oder Rammanöver zu versenken.
+
+## Features
+
+* **Multiplayer:** Lokales Spiel für 2 bis 10 Spieler.
+* **Strategische Kartennutzung:** Zu Beginn wählt jeder Spieler die Basis aus, von der seine Schiffe starten.
+* **Zwei Aktionsmodi:** * `MOVE`: Schiffe bewegen (Achtung vor Kollisionen – Rammen versenkt beide Schiffe!).
+  * `ATTACK`: Per Mausklick und "Ziel-Linie" Angriffe auf gegnerische Sektoren starten.
+* **Speicherfunktion:** Spielstände werden automatisch via DOM-Parser in einer XML-Datei (`saves/savegame.xml`) gesichert und beim nächsten Start wenn gewünscht geladen.
+* **Unit Tests:** Kernkomponenten des Controllers, der Koordinaten-Logik und des Parsers sind mit JUnit 5 abgesichert.
+
+## Voraussetzungen
+
+* **Java JDK:** Version 17 oder neuer.
+* **IDE:** Eclipse (empfohlen) oder IntelliJ IDEA.
+* **Frameworks:** JUnit 5 (für das Ausführen der Tests).
+
+## Projektstruktur
+
+* `src/model/` – Enthält die Datenstrukturen
+* `src/controller/` – Die Spielsteuerung und Zustandsschleifen
+* `src/view/` – Die grafische Oberfläche
+* `src/DOM/` – XML-Parser für das Laden und Speichern des Spielstands
+* `test/` – JUnit-Testklassen für automatisierte Black-Box- und Integrationstests.
+
+## Installation & Start
+
+1. Repository klonen oder als ZIP herunterladen und entpacken.
+2. Öffnen Sie das Projekt in Ihrer IDE (z.B. Eclipse).
+3. Stellen Sie sicher, dass der Ordner `assets/` (enthält `Map4.png`) und der Ordner `saves/` im Klassenpfad bzw. Projektverzeichnis liegen.
+4. Starten Sie das Spiel über die Hauptklasse (Klasse mit der `main`-Methode, üblicherweise im View- oder Controller-Package).
+
+## Tests ausführen
+
+Rechtklick auf den Ordner `test` (oder eine spezifische Testklasse wie `GameController_Test.java`) -> **Run As** -> **JUnit Test**.

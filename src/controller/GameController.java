@@ -374,15 +374,14 @@ public class GameController {
 							if (curState == State.MOVE) {
 								curShip.isSunken = true;
 								view.infoScreen("Das schaffen nicht viele... IHR EIGENES SCHIFF ZU VERSENKEN. Halte besser mehr Abstand zu gegenerischen Schiffen");
-								
-								curPlayer.playerDefeat();
-								p.playerDefeat();
+							
+								if (p.playerDefeat()) {
+									view.infoScreen(p.getName(), State.ATTACK);
+								}
 								saveGame();
-								
 								if (!endRequired(true)) {
 									nextMove();
 								}
-								
 								return;
 							}
 							
